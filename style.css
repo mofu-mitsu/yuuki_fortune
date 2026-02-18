@@ -1,0 +1,328 @@
+/* 全体設定 */
+body {
+    background: linear-gradient(135deg, #1a0b2e 0%, #4a2b6b 100%); /* 深い紫のグラデ */
+    color: #fff;
+    font-family: 'Kiwi Maru', serif;
+    margin: 0;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.main-container {
+    background: rgba(255, 255, 255, 0.1); /* ガラスっぽい半透明 */
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    width: 90%;
+    max-width: 450px;
+    padding: 30px 20px;
+    border-radius: 20px;
+    box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
+    text-align: center;
+}
+
+/* ゆうきくん画像 */
+.yuuki-img-container {
+    position: relative;
+    width: 160px;
+    height: 160px;
+    margin: 0 auto;
+}
+
+.yuuki-img-container img {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 4px solid #ffd700;
+    box-shadow: 0 0 15px #ffd700;
+    transition: transform 0.3s;
+}
+
+.yuuki-img-container img:hover {
+    transform: scale(1.05);
+}
+
+/* 吹き出し */
+.dialogue-box {
+    background: #fff;
+    color: #333;
+    padding: 15px;
+    border-radius: 15px;
+    margin-top: 20px;
+    position: relative;
+    font-weight: bold;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+}
+.dialogue-box::after {
+    content: '';
+    position: absolute;
+    top: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    border-left: 10px solid transparent;
+    border-right: 10px solid transparent;
+    border-bottom: 10px solid #fff;
+}
+
+/* メニューボタン（豪華仕様） */
+.menu-btn {
+    display: block;
+    width: 100%;
+    padding: 18px;
+    margin: 15px 0;
+    background: linear-gradient(90deg, #6a11cb 0%, #2575fc 100%);
+    border: none;
+    border-radius: 50px;
+    color: white;
+    font-size: 1.2rem;
+    font-family: 'Zen Maru Gothic', sans-serif;
+    font-weight: 700;
+    cursor: pointer;
+    box-shadow: 0 4px 15px rgba(37, 117, 252, 0.4);
+    transition: all 0.3s;
+}
+
+.menu-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 20px rgba(37, 117, 252, 0.6);
+}
+
+.menu-btn i {
+    margin-right: 10px; /* アイコンと文字の間隔 */
+}
+
+.night-only {
+    background: linear-gradient(90deg, #0f2027, #203a43, #2c5364);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+}
+
+/* 結果エリア */
+.hidden { display: none; }
+
+#card-display {
+    min-height: 250px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 20px;
+}
+/* 画像がない時の仮表示用 */
+.temp-card {
+    width: 150px;
+    height: 250px;
+    background: #333;
+    border: 2px solid gold;
+    border-radius: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 3rem;
+}
+
+/* リンクボタン */
+.link-btn {
+    display: inline-block;
+    margin-top: 15px;
+    padding: 10px 20px;
+    background-color: #ff4757; /* 人狼っぽい赤 */
+    color: white;
+    text-decoration: none;
+    border-radius: 20px;
+    font-weight: bold;
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+}
+
+.yuuki-comment-box {
+    background: rgba(0,0,0,0.3);
+    padding: 15px;
+    border-radius: 10px;
+    margin-top: 15px;
+    border-left: 4px solid #ffd700;
+    text-align: left;
+}
+.yuuki-comment-box .label {
+    font-size: 0.8rem;
+    color: #ffd700;
+    display: block;
+    margin-bottom: 5px;
+}
+
+/* タイトル */
+.game-title {
+    font-family: 'Zen Maru Gothic', sans-serif;
+    color: #ffd700;
+    text-shadow: 0 0 10px #e60073, 2px 2px 0 #000;
+    margin-bottom: 20px;
+    font-size: 1.8rem;
+}
+
+/* 相性結果の相手画像 */
+.partner-img img {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    border: 4px solid white;
+    box-shadow: 0 0 15px rgba(255,255,255,0.5);
+    background: #fff;
+    object-fit: cover;
+}
+
+.score-box {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin: 15px 0;
+    background: rgba(255,255,255,0.1);
+    padding: 10px;
+    border-radius: 10px;
+}
+.score-num {
+    color: #ff758c;
+    font-size: 2.5rem;
+}
+
+/* 相手のセリフエリア */
+.partner-voice {
+    background: #fffaf0; /* ちょっとクリーム色 */
+    color: #444;
+    text-align: left;
+    margin-bottom: 10px;
+}
+
+/* --- 追加・修正分 --- */
+
+/* 🔽 プルダウン（セレクトボックス）を豪華に */
+select {
+    width: 100%;
+    padding: 15px;
+    margin: 10px 0;
+    border-radius: 25px;
+    border: 2px solid #a982ff;
+    background-color: rgba(255, 255, 255, 0.9);
+    color: #333;
+    font-family: 'Kiwi Maru', serif;
+    font-size: 1rem;
+    font-weight: bold;
+    cursor: pointer;
+    outline: none;
+    appearance: none; /* デフォルトの矢印を消す */
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%236a11cb' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 15px center;
+    background-size: 20px;
+}
+
+select:hover {
+    border-color: #ffd700;
+}
+
+/* 🔙 戻るボタン・リトライボタン */
+.retry-btn {
+    display: block;
+    width: 100%;
+    padding: 12px;
+    margin-top: 15px;
+    background: transparent;
+    border: 2px solid rgba(255, 255, 255, 0.5);
+    color: #fff;
+    border-radius: 25px;
+    cursor: pointer;
+    font-family: 'Zen Maru Gothic', sans-serif;
+    transition: all 0.3s;
+}
+
+.retry-btn:hover {
+    background: rgba(255, 255, 255, 0.2);
+    border-color: #fff;
+}
+
+/* 👤 プロフィール表示エリア（結果画面用） */
+.profile-info {
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 10px;
+    padding: 10px;
+    margin: 10px 0;
+    font-size: 0.9rem;
+    text-align: left;
+}
+
+.profile-tag {
+    display: inline-block;
+    background: #6a11cb;
+    color: white;
+    padding: 2px 8px;
+    border-radius: 5px;
+    margin-right: 5px;
+    font-size: 0.8rem;
+}
+
+.bio-text {
+    margin-top: 5px;
+    line-height: 1.4;
+    font-size: 0.9rem;
+}
+
+/* 名前入力エリア */
+.name-input-area {
+    margin-bottom: 15px;
+    background: rgba(255, 255, 255, 0.2);
+    padding: 10px;
+    border-radius: 15px;
+}
+.name-input-area label {
+    font-size: 0.9em;
+    display: block;
+    margin-bottom: 5px;
+}
+.name-input-area input {
+    width: 80%;
+    padding: 8px;
+    border-radius: 20px;
+    border: none;
+    text-align: center;
+    font-family: 'Kiwi Maru', serif;
+}
+
+/* 共有ボタン */
+.share-btn {
+    background: #000;
+    color: #fff;
+    margin-top: 10px;
+    border: 1px solid #fff;
+}
+.share-btn i {
+    margin-right: 5px;
+}
+
+/* 運勢メーター（棒グラフ） */
+.meter-box {
+    text-align: left;
+    margin: 10px 0;
+    background: rgba(0,0,0,0.3);
+    padding: 10px;
+    border-radius: 10px;
+}
+.meter-label {
+    font-size: 0.9em;
+    margin-bottom: 2px;
+}
+.meter-bar-bg {
+    width: 100%;
+    height: 10px;
+    background: #555;
+    border-radius: 5px;
+    overflow: hidden;
+}
+.meter-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #ffd700, #ff8c00);
+    width: 0%; /* JSで動かす */
+    transition: width 1s ease-out;
+}

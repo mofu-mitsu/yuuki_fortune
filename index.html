@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ゆうきの気まぐれ猫占い🔮</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Kiwi+Maru:wght@500&family=Zen+Maru+Gothic:wght@700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div class="main-container">
+        <h1 class="game-title">🔮 ゆうきの気まぐれ占い 🔮</h1>
+
+        <!-- 👤 名前入力エリア -->
+        <div class="name-input-area">
+            <label for="user-name">名前を教えて？</label>
+            <input type="text" id="user-name" placeholder="キミの名前（未入力は「キミ」）">
+        </div>
+
+        <!-- ゆうきくんエリア -->
+        <header class="yuuki-area">
+            <div class="yuuki-img-container">
+                <img src="images/yuuki.png" alt="占い師ゆうき" id="yuuki-face">
+            </div>
+            <div class="dialogue-box">
+                <p id="yuuki-voice">
+                    「いらっしゃ〜い。<br>今日は何する？」
+                </p>
+            </div>
+        </header>
+
+        <!-- メニューボタンエリア -->
+        <nav class="menu-list" id="menu-area">
+            <!-- 1. タロット -->
+            <button onclick="startDailyFortune()" class="menu-btn">
+                <i class="fa-solid fa-wand-magic-sparkles"></i> 今日の運勢（タロット）
+            </button>
+            
+            <!-- 2. カテゴリ別運勢（日替わり固定） -->
+            <button onclick="startCategoryFortune()" class="menu-btn" style="background: linear-gradient(90deg, #ff9a9e, #fecfef);">
+                <i class="fa-solid fa-chart-pie"></i> 項目別運勢<br><span style="font-size:0.8em">（恋愛・創作・金運など）</span>
+            </button>
+
+            <!-- 3. 誕生日・星座占い（NEW!） -->
+            <button onclick="showBirthdayForm()" class="menu-btn" style="background: linear-gradient(90deg, #a18cd1, #fbc2eb);">
+                <i class="fa-solid fa-star"></i> 誕生日・星座占い<br><span style="font-size:0.8em">（あなたへのメッセージ）</span>
+            </button>
+
+            <!-- 4. クラス相性 -->
+            <button onclick="startCompatibilityMenu()" class="menu-btn">
+                <i class="fa-solid fa-heart-pulse"></i> クラス相性占い
+            </button>
+            
+            <!-- 5. 深読み -->
+            <button onclick="startDeepReading()" class="menu-btn night-only">
+                <i class="fa-solid fa-moon"></i> 深読みモード
+            </button>
+        </nav>
+
+        <!-- 🆕 誕生日入力フォーム -->
+        <div id="birthday-form" class="hidden">
+            <h3>誕生日を教えて！</h3>
+            <div style="display: flex; gap: 10px; justify-content: center;">
+                <select id="birth-month">
+                    <option value="">月</option>
+                    <!-- JSで1~12月を入れる -->
+                </select>
+                <select id="birth-day">
+                    <option value="">日</option>
+                    <!-- JSで1~31日を入れる -->
+                </select>
+            </div>
+            <button onclick="startBirthdayFortune()" class="menu-btn">占う！</button>
+            <button onclick="resetScreen()" class="retry-btn">戻る</button>
+        </div>
+
+        <!-- 相性占い選択メニュー -->
+        <div id="compatibility-menu" class="hidden">
+            <h3>どっちで占う？</h3>
+            <button onclick="startDailyBestMatch()" class="menu-btn" style="background: linear-gradient(90deg, #ff758c, #ff7eb3);">
+                <i class="fa-solid fa-crown"></i> 今日のNo.1パートナー<br><span style="font-size:0.8em">（日替わり！）</span>
+            </button>
+            <button onclick="showSelectForm()" class="menu-btn" style="background: linear-gradient(90deg, #4facfe, #00f2fe);">
+                <i class="fa-solid fa-user-check"></i> あの人との相性<br><span style="font-size:0.8em">（指名して占う）</span>
+            </button>
+            <button onclick="resetScreen()" class="retry-btn">戻る</button>
+        </div>
+
+        <!-- 指名フォーム -->
+        <div id="select-form" class="hidden">
+            <h3>誰との相性をみる？</h3>
+            <select id="class-select" onchange="updateMemberSelect()">
+                <option value="">クラスを選んでね</option>
+                <option value="1-1">1年1組</option>
+                <option value="1-4">1年4組</option>
+                <option value="3-1">3年1組</option>
+                <!-- 必要ならクラス追加 -->
+            </select>
+            <br>
+            <select id="member-select">
+                <option value="">まずはクラスを選んでね</option>
+            </select>
+            <br>
+            <button onclick="calculateSpecificCompatibility()" class="menu-btn">占う！</button>
+            <button onclick="startCompatibilityMenu()" class="retry-btn">戻る</button>
+        </div>
+
+        <!-- 結果表示エリア（ここだけに結果を出す！） -->
+        <div id="result-area" class="hidden"></div>
+
+    </div>
+
+    <script src="data.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
