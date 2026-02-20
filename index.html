@@ -31,23 +31,22 @@
             </div>
         </header>
 
-        <!-- メニューボタンエリア -->
+                <!-- メニューボタンエリア -->
         <nav class="menu-list" id="menu-area">
-            <!-- 1. タロット -->
+            <!-- 1. 今日の運勢（これは固定にする！） -->
             <button onclick="startDailyFortune()" class="menu-btn">
-                <i class="fa-solid fa-wand-magic-sparkles"></i> 今日の運勢（タロット）
+                <i class="fa-solid fa-calendar-day"></i> 今日の運勢（タロット）<br><span style="font-size:0.8em">（結果は1日1回固定！）</span>
             </button>
             
-            <!-- 2. カテゴリ別運勢（日替わり固定） -->
+            <!-- 🆕 2. 完全ランダム運勢（ここに追加！） -->
+            <button onclick="startRandomFortune()" class="menu-btn" style="background: linear-gradient(90deg, #43e97b, #38f9d7);">
+                <i class="fa-solid fa-dice"></i> 今、この瞬間の運勢<br><span style="font-size:0.8em">（何度でも引けるよ！）</span>
+            </button>
+            
+            <!-- 3. カテゴリ別運勢 -->
             <button onclick="startCategoryFortune()" class="menu-btn" style="background: linear-gradient(90deg, #ff9a9e, #fecfef);">
                 <i class="fa-solid fa-chart-pie"></i> 項目別運勢<br><span style="font-size:0.8em">（恋愛・創作・金運など）</span>
             </button>
-
-            <!-- 3. 誕生日・星座占い（NEW!） -->
-            <button onclick="showBirthdayForm()" class="menu-btn" style="background: linear-gradient(90deg, #a18cd1, #fbc2eb);">
-                <i class="fa-solid fa-star"></i> 誕生日・星座占い<br><span style="font-size:0.8em">（あなたへのメッセージ）</span>
-            </button>
-
             <!-- 4. クラス相性 -->
             <button onclick="startCompatibilityMenu()" class="menu-btn">
                 <i class="fa-solid fa-heart-pulse"></i> クラス相性占い
