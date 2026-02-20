@@ -108,50 +108,75 @@ function startDailyFortune() {
 
 
 // ---------------------------------------------------
-// 🎲 2. 今、この瞬間の運勢（NEW!）
-// ➡ 完全ランダム！何度でも引ける！
+// 🔮 2. 今、この瞬間の運勢（水晶玉占い）
+// ➡ 完全ランダム！ラッキーアイテムが出るよ！
 // ---------------------------------------------------
 function startRandomFortune() {
     menuArea.style.display = "none";
     resultArea.classList.remove("hidden");
     const userName = getName();
 
-    yuukiVoice.innerHTML = `「おっ、${userName}。<br>今の運気が知りたい感じ？<br>何度でも引いていいよ〜（笑）」`;
+    yuukiVoice.innerHTML = `「おっ、${userName}。<br>水晶玉で少し先の未来…<br>覗いてみる？」`;
     yuukiFace.src = "images/yuuki.png";
 
-    // ローディング（ちょっと早め）
-    resultArea.innerHTML = `<p>シャッフル、シャッフル♪...</p>`;
+    // 演出：水晶玉を表示（まだ文字は出さない）
+    resultArea.innerHTML = `
+        <h2>🔮 水晶玉の啓示</h2>
+        <div class="crystal-ball-container">
+            <div class="crystal-ball"></div>
+        </div>
+        <p>精神を統一して…ハッ！</p>
+    `;
 
+    // 1秒後に結果を表示
     setTimeout(() => {
-        // 🎲 ここは Math.random() で完全ランダム！
-        const card = tarotDeck[Math.floor(Math.random() * tarotDeck.length)];
-        
-        const comment = card.yuukiComment.replace(/{user}/g, userName);
+        // ランダムに選ぶ
+        const msg = crystalMessages[Math.floor(Math.random() * crystalMessages.length)];
+        const item = luckyItems[Math.floor(Math.random() * luckyItems.length)];
+        const color = luckyColors[Math.floor(Math.random() * luckyColors.length)];
 
+        // 結果画面の更新
         resultArea.innerHTML = `
-            <h2>⚡ 今、この瞬間の運勢</h2>
-            <div id="card-display">
-                ${card.image ? `<img src="${card.image}" style="max-width:100%; border-radius:10px;">` : `<div class="temp-card">🃏</div>`}
-            </div>
-            <h3>${card.name}</h3>
-            <p>${card.meaning}</p>
-            <div class="yuuki-comment-box">
-                <span class="label">ゆうき</span>
-                <p>「${comment}」</p>
-            </div>
-            <!-- ここでしか出ないレアコメントとかあっても面白いかも？ -->
+            <h2>🔮 水晶玉の啓示</h2>
             
-            <button onclick="startRandomFortune()" class="menu-btn" style="background: linear-gradient(90deg, #43e97b, #38f9d7); color:#333;">
-                <i class="fa-solid fa-dice"></i> もう一回引く！
-            </button>
+            <div class="crystal-ball-container">
+                <div class="crystal-ball">
+                    <!-- 水晶の中に文字を浮かべる演出 -->
+                    <div class="crystal-text" style="opacity:1; animation: fadeIn 2s;">${msg}</div>
+                </div>
+            </div>
 
-            <button onclick="shareResult('今の運勢は【${card.name}】！ゆうき「${comment}」 #ゆうきの気まぐれ占い')" class="menu-btn share-btn">
-                <i class="fa-solid fa-share-nodes"></i> 結果をシェア
-            </button>
-            <button onclick="resetScreen()" class="retry-btn">トップに戻る</button>
+            <div class="yuuki-comment-box">
+                <span class="label">水晶のお告げ</span>
+                <p>「${msg}」</p>
+            </div>
+
+            <div style="display:flex; gap:10px; margin-top:10px;">
+                <div class="lucky-box" style="flex:1;">
+                    <span class="lucky-label">🍀 ラッキーアイテム</span>
+                    <div class="lucky-content">${item}</div>
+                </div>
+                <div class="lucky-box" style="flex:1;">
+                    <span class="lucky-label">🎨 ラッキーカラー</span>
+                    <div class="lucky-content">${color}</div>
+                </div>
+            </div>
+            
+            <div style="margin-top:15px;">
+                <button onclick="startRandomFortune()" class="menu-btn" style="background: linear-gradient(90deg, #43e97b, #38f9d7); color:#333;">
+                    <i class="fa-solid fa-rotate"></i> もう一回覗く
+                </button>
+                <button onclick="shareResult('今のラッキーアイテムは【${item}】！水晶のお告げ「${msg}」 #ゆうきの気まぐれ占い')" class="menu-btn share-btn">
+                    <i class="fa-solid fa-share-nodes"></i> 結果をシェア
+                </button>
+                <button onclick="resetScreen()" class="retry-btn">トップに戻る</button>
+            </div>
         `;
-        updateYuukiFace(card.resultType);
-    }, 800); // ちょっと早めに結果が出る（0.8秒）
+        
+        // ゆうきの顔をランダムで変える（水晶の結果が良いか悪いかわからないから適当に）
+        yuukiFace.src = "images/yuuki.png"; 
+
+    }, 1000);
 }
 
 
