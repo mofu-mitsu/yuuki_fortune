@@ -326,3 +326,68 @@ select:hover {
     width: 0%; /* JSで動かす */
     transition: width 1s ease-out;
 }
+
+/* 🔮 水晶玉のアニメーション */
+.crystal-ball-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 180px;
+    margin: 20px 0;
+}
+
+.crystal-ball {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    /* 紫〜黒の怪しいグラデーション */
+    background: radial-gradient(circle at 30% 30%, rgba(200, 150, 255, 0.8), #2c1e38 80%);
+    /* 光沢と影 */
+    box-shadow: 
+        0 0 20px rgba(169, 130, 255, 0.6), /* 外側の光 */
+        inset 0 0 20px rgba(255, 255, 255, 0.4), /* 内側の光沢 */
+        inset -10px -20px 30px rgba(0, 0, 0, 0.8); /* 立体感 */
+    position: relative;
+    animation: pulseBall 3s infinite ease-in-out;
+}
+
+/* ふわふわ浮いて光る動き */
+@keyframes pulseBall {
+    0% { transform: translateY(0) scale(1); box-shadow: 0 0 20px rgba(169, 130, 255, 0.6); }
+    50% { transform: translateY(-10px) scale(1.05); box-shadow: 0 0 40px rgba(169, 130, 255, 1); }
+    100% { transform: translateY(0) scale(1); box-shadow: 0 0 20px rgba(169, 130, 255, 0.6); }
+}
+
+/* 水晶の中に文字を浮かべる */
+.crystal-text {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: #fff;
+    font-weight: bold;
+    text-shadow: 0 0 5px #ff00de;
+    opacity: 0;
+    width: 80%;
+    font-size: 0.9rem;
+    pointer-events: none; /* クリック邪魔しない */
+}
+
+/* 結果が出た時のラッキーアイテム表示 */
+.lucky-box {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid #a982ff;
+    border-radius: 10px;
+    padding: 10px;
+    margin-top: 10px;
+    text-align: left;
+}
+.lucky-label {
+    color: #ffd700;
+    font-size: 0.8rem;
+    display: block;
+}
+.lucky-content {
+    font-size: 1.1rem;
+    font-weight: bold;
+}
