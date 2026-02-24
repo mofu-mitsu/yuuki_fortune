@@ -34,36 +34,24 @@ function getName() {
     return name;
 }
 
-// 👀 【NEW】瞬き機能
+// 👀 瞬き機能
 function startBlinking() {
-    // 重複防止のため一旦クリア
     clearInterval(blinkInterval);
-    
-    // 4秒ごとに瞬き
     blinkInterval = setInterval(() => {
-        // メニューが表示されている時だけ瞬きする（結果画面では表情固定）
         if (menuArea.style.display !== "none") {
-            const originalSrc = yuukiFace.src;
-            
-            // 目を閉じる（ニコ顔）
             yuukiFace.src = "images/yuuki_good.png";
-            
-            // 150ミリ秒後に目を開ける
             setTimeout(() => {
-                // まだメニュー画面にいるなら戻す
                 if (menuArea.style.display !== "none") {
                     yuukiFace.src = "images/yuuki.png";
                 }
             }, 150);
         }
-    }, 4000); // 4000ミリ秒 = 4秒間隔
+    }, 4000);
 }
 
-// 🛑 瞬き停止（結果画面に行くとき用）
 function stopBlinking() {
     clearInterval(blinkInterval);
 }
-
 
 // 🎲 日替わり固定ランダム関数
 function getDailyRandom(uniqueKeyword) {
@@ -77,8 +65,7 @@ function getDailyRandom(uniqueKeyword) {
     return (hash % 1000) / 1000;
 }
 
-
-// 🔄 リセット（ホームに戻る）
+// 🔄 リセット
 function resetScreen() {
     menuArea.style.display = "block";
     compMenu.classList.add("hidden");
@@ -89,36 +76,49 @@ function resetScreen() {
     
     yuukiFace.src = "images/yuuki.png";
     yuukiVoice.innerHTML = `「おかえり、${getName()}。<br>次はどうする？」`;
-    
-    // ホームに戻ったので瞬き再開
     startBlinking();
 }
 
 
 // ---------------------------------------------------
 // 🔮 1. 今日の運勢（タロット）
+// ➡ 裏面からのめくり演出追加！
 // ---------------------------------------------------
 function startDailyFortune() {
-    stopBlinking(); // 瞬き停止
+    stopBlinking();
     menuArea.style.display = "none";
     resultArea.classList.remove("hidden");
     const userName = getName();
 
-    yuukiVoice.innerHTML = `「${userName}の今日の運勢ね？<br>バシッと占ってあげるよ！」`;
+    yuukiVoice.innerHTML = `「${userName}の今日の運勢ね？<br>このカードが運命を告げるよ…」`;
     yuukiFace.src = "images/yuuki.png";
-    resultArea.innerHTML = `<p>運命のカードを選出中...</p>`;
 
-    setTimeout(() => {
-        const rand = getDailyRandom("tarot");
-        const cardIndex = Math.floor(rand * tarotDeck.length);
-        const card = tarotDeck[cardIndex];
-        const comment = card.yuukiComment.replace(/{user}/g, userName);
+    // 計算
+    const rand = getDailyRandom("tarot");
+    const cardIndex = Math.floor(rand * tarotDeck.length);
+    const card = tarotDeck[cardIndex];
+    const comment = card.yuukiComment.replace(/{user}/g, userName);
+    const cardImg = card.image || ""; 
 
-        resultArea.innerHTML = `
-            <h2>📅 今日の運勢結果</h2>
-            <div id="card-display">
-                ${card.image ? `<img src="${card.image}" style="max-width:100%; border-radius:10px;">` : `<div class="temp-card">🃏</div>`}
+    // HTML生成（カードは裏面のまま）
+    // 裏面画像がない場合は単色を表示する安全策つき
+    resultArea.innerHTML = `
+        <h2>📅 今日の運勢結果</h2>
+        
+        <div class="card-scene">
+            <div class="card-object" id="tarot-card-obj">
+                <!-- 表面（結果） -->
+                <div class="card-face card-face-front">
+                    ${cardImg ? `<img src="${cardImg}" style="width:100%; height:100%; border-radius:10px;">` : `<div class="temp-card" style="width:100%;height:100%;background:#fff;color:#000;">${card.name}</div>`}
+                </div>
+                <!-- 裏面 -->
+                <div class="card-face card-face-back">
+                    <img src="images/card_back.png" onerror="this.style.display='none';this.parentNode.style.background='#2c1e38';this.parentNode.innerHTML='🔮'">
+                </div>
             </div>
+        </div>
+
+        <div id="result-text-area" style="opacity:0; transition:opacity 1s;">
             <h3>${card.name}</h3>
             <p>${card.meaning}</p>
             <div class="yuuki-comment-box">
@@ -131,17 +131,33 @@ function startDailyFortune() {
                 <i class="fa-solid fa-share-nodes"></i> 今日の結果をシェア
             </button>
             <button onclick="resetScreen()" class="retry-btn">戻る</button>
-        `;
-        updateYuukiFace(card.resultType);
-    }, 1500);
+        </div>
+    `;
+
+    // 1秒後にめくる！
+    setTimeout(() => {
+        const cardObj = document.getElementById("tarot-card-obj");
+        const textArea = document.getElementById("result-text-area");
+        
+        if(cardObj) {
+            cardObj.classList.add("is-flipped"); // クラス追加で回転CSS発動
+            updateYuukiFace(card.resultType);    // 顔を変える
+            
+            // さらに0.5秒後にテキストをふわっと出す
+            setTimeout(() => {
+                if(textArea) textArea.style.opacity = "1";
+            }, 500);
+        }
+    }, 1000);
 }
 
 
 // ---------------------------------------------------
 // 🔮 2. 今、この瞬間の運勢（水晶玉）
+// ➡ {user}変換バグ修正済み！
 // ---------------------------------------------------
 function startRandomFortune() {
-    stopBlinking(); // 瞬き停止
+    stopBlinking();
     menuArea.style.display = "none";
     resultArea.classList.remove("hidden");
     const userName = getName();
@@ -156,7 +172,11 @@ function startRandomFortune() {
     `;
 
     setTimeout(() => {
-        const msg = crystalMessages[Math.floor(Math.random() * crystalMessages.length)];
+        // メッセージ取得
+        let msg = crystalMessages[Math.floor(Math.random() * crystalMessages.length)];
+        // 🔧 ここで置換を実行！！
+        msg = msg.replace(/{user}/g, userName);
+
         const item = luckyItems[Math.floor(Math.random() * luckyItems.length)];
         const color = luckyColors[Math.floor(Math.random() * luckyColors.length)];
 
@@ -185,6 +205,7 @@ function startRandomFortune() {
 
 // ---------------------------------------------------
 // 📊 3. 項目別運勢
+// ➡ グラフがグイーンと伸びる演出追加！
 // ---------------------------------------------------
 function startCategoryFortune() {
     stopBlinking();
@@ -205,16 +226,55 @@ function startCategoryFortune() {
     else if (money > 90) totalComment = "金運やば！奢ってよ（笑）";
     else if (love < 20 && human < 20) totalComment = "…今日は家で大人しく寝とこう。ね？";
 
+    // 初期状態は width: 0% で描画
     resultArea.innerHTML = `
         <h2>📊 今日のステータス</h2>
-        <div class="meter-box"><div class="meter-label">💘 恋愛運: ${love}%</div><div class="meter-bar-bg"><div class="meter-bar-fill" style="width:${love}%"></div></div></div>
-        <div class="meter-box"><div class="meter-label">🎨 創作/勉強: ${work}%</div><div class="meter-bar-bg"><div class="meter-bar-fill" style="width:${work}%"></div></div></div>
-        <div class="meter-box"><div class="meter-label">💰 金運: ${money}%</div><div class="meter-bar-bg"><div class="meter-bar-fill" style="width:${money}%"></div></div></div>
-        <div class="meter-box"><div class="meter-label">🤝 対人運: ${human}%</div><div class="meter-bar-bg"><div class="meter-bar-fill" style="width:${human}%"></div></div></div>
+        
+        <div class="meter-box">
+            <div class="meter-label">💘 恋愛運: <span class="count-up" data-target="${love}">0</span>%</div>
+            <div class="meter-bar-bg"><div class="meter-bar-fill" id="bar-love" style="width:0%"></div></div>
+        </div>
+        
+        <div class="meter-box">
+            <div class="meter-label">🎨 創作/勉強: <span class="count-up" data-target="${work}">0</span>%</div>
+            <div class="meter-bar-bg"><div class="meter-bar-fill" id="bar-work" style="width:0%"></div></div>
+        </div>
+        
+        <div class="meter-box">
+            <div class="meter-label">💰 金運: <span class="count-up" data-target="${money}">0</span>%</div>
+            <div class="meter-bar-bg"><div class="meter-bar-fill" id="bar-money" style="width:0%"></div></div>
+        </div>
+        
+        <div class="meter-box">
+            <div class="meter-label">🤝 対人運: <span class="count-up" data-target="${human}">0</span>%</div>
+            <div class="meter-bar-bg"><div class="meter-bar-fill" id="bar-human" style="width:0%"></div></div>
+        </div>
+
         <div class="yuuki-comment-box"><span class="label">ゆうき</span><p>「${totalComment}」</p></div>
         <button onclick="shareResult('【${userName}の運勢】恋愛${love}% 創作${work}% 金運${money}%！ #ゆうきの気まぐれ占い')" class="menu-btn share-btn"><i class="fa-solid fa-share-nodes"></i> シェア</button>
         <button onclick="resetScreen()" class="retry-btn">戻る</button>
     `;
+
+    // 描画後少し待ってからグラフを伸ばす（これでアニメーションになる）
+    setTimeout(() => {
+        document.getElementById("bar-love").style.width = `${love}%`;
+        document.getElementById("bar-work").style.width = `${work}%`;
+        document.getElementById("bar-money").style.width = `${money}%`;
+        document.getElementById("bar-human").style.width = `${human}%`;
+        
+        // 数字のカウントアップ
+        document.querySelectorAll('.count-up').forEach(el => {
+            const target = +el.getAttribute('data-target');
+            let count = 0;
+            const inc = Math.ceil(target / 20); // スピード調整
+            const timer = setInterval(() => {
+                count += inc;
+                if (count > target) count = target;
+                el.innerText = count;
+                if (count === target) clearInterval(timer);
+            }, 30);
+        });
+    }, 100);
 }
 
 
@@ -336,7 +396,7 @@ function calculateSpecificCompatibility() {
 }
 
 
-// 【重要】相性結果表示（全キャラ表情変動ロジック入り）
+// 【重要】相性結果表示
 function showCompResult(partner, score, rank) {
     const userName = getName();
     const types = partner.types || { mbti: "?", enneagram: "?", socio: "?" };
@@ -351,23 +411,16 @@ function showCompResult(partner, score, rank) {
     else if (rank === "normal") yuukiComment = "ま、普通が一番平和ってことよ。";
     else yuukiComment = "…ま、まあドンマイ！明日があるさ！";
 
-    // 🖼️ 画像切り替えロジック
-    // momoka.png, momoka_good.png, momoka_bad.png を使い分ける
     let suffix = "";
-    if (rank === "best" || rank === "good") {
-        suffix = "_good"; // 良い結果なら笑顔
-    } else if (rank === "bad") {
-        suffix = "_bad"; // 悪い結果なら困り顔
-    }
+    if (rank === "best" || rank === "good") suffix = "_good";
+    else if (rank === "bad") suffix = "_bad";
     
-    // 画像パス作成
     let partnerImgSrc = `images/${partner.id}${suffix}.png`;
 
     resultArea.innerHTML = `
         <h2 style="color:${color}">❤️ 相性診断結果</h2>
         
         <div class="partner-img">
-            <!-- onerrorで、_goodや_badが無くても通常の画像を表示させる安全装置 -->
             <img src="${partnerImgSrc}" 
                  onerror="this.src='images/${partner.id}.png'; this.onerror=null;" 
                  style="border-color:${color}">
@@ -387,8 +440,6 @@ function showCompResult(partner, score, rank) {
         <button onclick="startCompatibilityMenu()" class="retry-btn">他の子も占う</button>
         <button onclick="resetScreen()" class="retry-btn">トップに戻る</button>
     `;
-    
-    // ゆうきの表情も結果に合わせる
     updateYuukiFace(rank);
 }
 
@@ -397,35 +448,17 @@ function showCompResult(partner, score, rank) {
 // 🌙 6. 深読みモード
 // ---------------------------------------------------
 const shadowKeywords = [
-    // --- 既存 ---
     "孤独", "渇望", "解放", "沈黙", "覚醒", "依存", "虚無", "追憶", "衝動", "浄化",
-
-    // --- 新規追加 ---
-    "哀愁", "乖離", "予感", "欠落", "潜伏", "境界", "矛盾", 
-    "回帰", "偽り", "祈り", "崩壊", "迷宮", "残響", "逃避", 
-    "変容", "深淵", "秘密", "共鳴", "刹那", "再生"
+    "哀愁", "乖離", "予感", "欠落", "潜伏", "境界", "矛盾", "回帰", "偽り", "祈り", "崩壊", "迷宮", "残響", "逃避", "変容", "深淵", "秘密", "共鳴", "刹那", "再生"
 ];
 const midnightMissions = [
-    // --- 既存 ---
-    "窓を少しだけ開けて、夜の匂いを嗅いでみて。", 
-    "スマホの画面を伏せて、1分間目を閉じて。", 
-    "誰も見ていないから、変な顔をしてみて。",
-    "冷たい水を一杯だけ飲んで、体内を冷まして。", 
-    "嫌だった記憶を紙に書いて、ビリビリに破いて。", 
-    "お気に入りの曲を、最小の音量で聴いて。",
-    "鏡の中の自分と、3秒だけ目を合わせて。",
-
-    // --- 新規追加 ---
-    "自分の脈を測って、生きているリズムを感じて。",
-    "部屋の電気を消して、月明かり（または街灯）を探して。",
-    "枕に顔をうずめて、一度だけ音にならない叫び声をあげて。",
-    "自分の手のひらをじっと見つめて、手相をなぞってみて。",
-    "一番古い写真フォルダを見返して、その時の空気を感じて。",
-    "深呼吸をして、吸う息より吐く息を長くしてみて。",
-    "布団の中で、誰にも言えない秘密を一つだけ呟いて。",
-    "壁や床の冷たさを、指先で確かめて。",
-    "目を閉じて、一番行きたい場所を具体的に想像して。",
-    "自分自身を、自分でぎゅっと抱きしめてあげて。"
+    "窓を少しだけ開けて、夜の匂いを嗅いでみて。", "スマホの画面を伏せて、1分間目を閉じて。", "誰も見ていないから、変な顔をしてみて。",
+    "冷たい水を一杯だけ飲んで、体内を冷まして。", "嫌だった記憶を紙に書いて、ビリビリに破いて。", "お気に入りの曲を、最小の音量で聴いて。",
+    "鏡の中の自分と、3秒だけ目を合わせて。", "自分の脈を測って、生きているリズムを感じて。", "部屋の電気を消して、月明かり（または街灯）を探して。",
+    "枕に顔をうずめて、一度だけ音にならない叫び声をあげて。", "自分の手のひらをじっと見つめて、手相をなぞってみて。",
+    "一番古い写真フォルダを見返して、その時の空気を感じて。", "深呼吸をして、吸う息より吐く息を長くしてみて。",
+    "布団の中で、誰にも言えない秘密を一つだけ呟いて。", "壁や床の冷たさを、指先で確かめて。",
+    "目を閉じて、一番行きたい場所を具体的に想像して。", "自分自身を、自分でぎゅっと抱きしめてあげて。"
 ];
 
 function startDeepReading() {
