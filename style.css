@@ -518,3 +518,29 @@ select:hover {
     width: 0%; /* 初期値0 */
     transition: width 1.5s cubic-bezier(0.22, 1, 0.36, 1); /* グイーンと伸びる */
 }
+
+/* --- 📂 ファイル選択ボタンのカスタマイズ --- */
+input[type="file"] {
+    color: #fff; /* ファイル名の文字色 */
+    font-size: 0.9rem;
+    padding: 5px;
+}
+
+/* ボタン部分だけのデザイン */
+input[type="file"]::file-selector-button {
+    border: none;
+    padding: 8px 15px;
+    border-radius: 20px;
+    background: linear-gradient(90deg, #a18cd1, #fbc2eb); /* パステル紫ピンク */
+    color: #fff;
+    font-weight: bold;
+    font-family: 'Zen Maru Gothic', sans-serif;
+    cursor: pointer;
+    margin-right: 10px;
+    transition: transform 0.2s;
+}
+
+input[type="file"]::file-selector-button:hover {
+    transform: scale(1.05);
+    opacity: 0.9;
+}
