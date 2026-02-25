@@ -44,16 +44,26 @@
                 <i class="fa-solid fa-dice"></i> 今、この瞬間の運勢<br><span style="font-size:0.8em">（何度でも引けるよ！）</span>
             </button>
             
-            <!-- 3. カテゴリ別運勢 -->
+            <!-- 3. 項目別運勢（ボタン復活！） -->
             <button onclick="startCategoryFortune()" class="menu-btn" style="background: linear-gradient(90deg, #ff9a9e, #fecfef);">
-                <i class="fa-solid fa-chart-pie"></i> 項目別運勢<br><span style="font-size:0.8em">（恋愛・創作・金運など）</span>
+                <i class="fa-solid fa-chart-pie"></i> 項目別運勢<br>
+                <span style="font-size:0.8em">（恋愛・創作・金運など）</span>
             </button>
-            <!-- 4. クラス相性 -->
-            <button onclick="startCompatibilityMenu()" class="menu-btn">
+
+            <!-- 4. 誕生日・星座占い（NEWボタン！） -->
+            <button onclick="showBirthdayForm()" class="menu-btn" style="background: linear-gradient(90deg, #a18cd1, #fbc2eb);">
+                <i class="fa-solid fa-star"></i> 誕生日・星座占い<br>
+                <span style="font-size:0.8em">（あなたへのメッセージ）</span>
+            </button>
+            <!-- 5. クラス相性 -->
+            <button onclick="startCompatibilityMenu()" class="menu-btn" style="background: linear-gradient(90deg, #DA22FF, #9733EE);">
                 <i class="fa-solid fa-heart-pulse"></i> クラス相性占い
             </button>
-            
-            <!-- 5. 深読み -->
+            <!-- 6. 相性  -->
+            <button onclick="showFreeCompForm()" class="menu-btn" style="background: linear-gradient(90deg, #89f7fe, #66a6ff);">
+                <i class="fa-solid fa-pen-fancy"></i> 自由入力で相性占い<br><span style="font-size:0.8em">（推しや友達の名前で！）</span>
+            </button>
+            <!-- 7. 深読み -->
             <button onclick="startDeepReading()" class="menu-btn night-only">
                 <i class="fa-solid fa-moon"></i> 深読みモード
             </button>
@@ -111,7 +121,26 @@
             <button onclick="calculateSpecificCompatibility()" class="menu-btn">占う！</button>
             <button onclick="startCompatibilityMenu()" class="retry-btn">戻る</button>
         </div>
+        <!-- 自由入力フォーム（更新版） -->
+        <div id="free-comp-form" class="hidden">
+            <h3>誰との相性をみる？</h3>
+            
+            <div class="name-input-area">
+                <label>① 相手の名前</label>
+                <input type="text" id="target-name" placeholder="推し・友達・etc...">
+            </div>
+            
+            <div class="name-input-area" style="margin-top:10px; background: rgba(255,255,255,0.1);">
+                <label>② 画像 (あれば)</label>
+                <!-- クラスなどはつけなくてもCSSの input[type="file"] が効くよ -->
+                <input type="file" id="target-img-file" accept="image/*">
+                <p style="font-size:0.75em; color:#ddd; margin-top:5px;">※画像がない場合はシルエットになります</p>
+            </div>
 
+            <br>
+            <button onclick="calculateFreeCompatibility()" class="menu-btn">この人と占う！</button>
+            <button onclick="resetScreen()" class="retry-btn">戻る</button>
+        </div>
         <!-- 結果表示エリア（ここだけに結果を出す！） -->
         <div id="result-area" class="hidden"></div>
 
