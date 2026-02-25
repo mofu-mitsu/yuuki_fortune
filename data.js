@@ -2357,12 +2357,14 @@ const classmates = [
 const tarotDeck = [
     {
         name: "ワンドの3",
+        image: "images/card_wand3.png",
         meaning: "そろそろ動き出す時かも？",
         yuukiComment: "準備運動は終わった？まあ焦らなくてもいいけどさ〜、行っちゃいなよ！",
         resultType: "bad"
     },
     {
         name: "カップのペイジ",
+        image: "images/card_cup.png",
         meaning: "新しいトキメキの予感",
         yuukiComment: "なんか楽しいことありそうじゃない？直感信じてみてよ。俺の占いより当たるかも（笑）",
         resultType: "good"
@@ -2839,3 +2841,4 @@ const luckyColors = [
     "真夜中のミッドナイトブルー",
     "透明（今日は気配を消していこw）"
 ];
+
