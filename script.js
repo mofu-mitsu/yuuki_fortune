@@ -9,7 +9,9 @@ const selectForm = document.getElementById("select-form");
 const birthdayForm = document.getElementById("birthday-form");
 const resultArea = document.getElementById("result-area");
 const nameInput = document.getElementById("user-name");
-
+const freeCompForm = document.getElementById("free-comp-form"); 
+const targetNameInput = document.getElementById("target-name");
+const targetImgInput = document.getElementById("target-img-file");
 // ⏳ 瞬き用のタイマー変数
 let blinkInterval;
 
@@ -278,8 +280,10 @@ function startCategoryFortune() {
 }
 
 
+// script.js の startBirthdayFortune をこれに書き換え！
+
 // ---------------------------------------------------
-// 🎂 4. 誕生日・星座占い
+// 🎂 4. 誕生日・星座占い（当日お祝い機能付き！）
 // ---------------------------------------------------
 function showBirthdayForm() {
     menuArea.style.display = "none";
@@ -288,8 +292,8 @@ function showBirthdayForm() {
 }
 
 function startBirthdayFortune() {
-    const month = document.getElementById("birth-month").value;
-    const day = document.getElementById("birth-day").value;
+    const month = parseInt(document.getElementById("birth-month").value);
+    const day = parseInt(document.getElementById("birth-day").value);
     
     if(!month || !day) {
         alert("月と日を選んでよ〜");
@@ -300,31 +304,65 @@ function startBirthdayFortune() {
     birthdayForm.classList.add("hidden");
     resultArea.classList.remove("hidden");
     const userName = getName();
-    const zodiac = getZodiac(parseInt(month), parseInt(day));
+    
+    // 星座判定
+    const zodiac = getZodiac(month, day);
+    
+    // 運勢指数（日替わり固定）
     const luckScore = Math.floor(getDailyRandom("zodiac" + month + day) * 100);
     
+    // 今日が誕生日かチェック！🎉
+    const today = new Date();
+    const isBirthday = (today.getMonth() + 1 === month) && (today.getDate() === day);
+
     let msg = "";
-    if(luckScore > 80) msg = "星が味方してる！願い事叶うかもよ？";
-    else if(luckScore > 50) msg = "可もなく不可もなく。いつも通りが一番！";
-    else msg = "ちょっと星の巡りが乱れてるかも。深呼吸してリラックスして。";
+    let specialEffect = ""; // お祝い演出用HTML
+
+    if (isBirthday) {
+        // 誕生日おめでとうモード！！🎂
+        yuukiFace.src = "images/yuuki_good.png"; // 満面の笑み
+        msg = `えっ、今日誕生日なの！？<br>おめでとーーー！！🎉<br>君にとって最高の一年になりますように！`;
+        
+        // ケーキとかクラッカーの絵文字を降らせる？（簡易的に表示）
+        specialEffect = `
+            <div style="font-size:4rem; animation: bounce 1s infinite;">🎂🎉🎁</div>
+            <p style="color:#ff69b4; font-weight:bold; font-size:1.2rem;">HAPPY BIRTHDAY!!</p>
+        `;
+    } else {
+        // 通常モード
+        yuukiFace.src = "images/yuuki.png";
+        if(luckScore > 80) msg = "星が味方してる！願い事叶うかもよ？";
+        else if(luckScore > 50) msg = "可もなく不可もなく。いつも通りが一番！";
+        else msg = "ちょっと星の巡りが乱れてるかも。深呼吸してリラックスして。";
+        
+        specialEffect = `<div style="font-size:3rem;">✨</div>`;
+    }
 
     resultArea.innerHTML = `
         <h2>⭐ 星座占い結果</h2>
-        <div style="font-size:3rem;">✨</div>
+        ${specialEffect}
+        
         <h3>${zodiac}の${userName}へ</h3>
         <p style="font-size:1.5rem; color:#ffd700; font-weight:bold;">今日の運勢指数: ${luckScore}</p>
-        <div class="yuuki-comment-box"><span class="label">ゆうき</span><p>「${msg}」</p></div>
-        <button onclick="shareResult('${userName}(${zodiac})の今日の運勢は${luckScore}！ #ゆうきの気まぐれ占い')" class="menu-btn share-btn"><i class="fa-solid fa-share-nodes"></i> シェア</button>
+        
+        <div class="yuuki-comment-box">
+            <span class="label">ゆうき</span>
+            <p>「${msg}」</p>
+        </div>
+        
+        <button onclick="shareResult('${userName}(${zodiac})の今日の運勢は${luckScore}！ #ゆうきの気まぐれ占い')" class="menu-btn share-btn">
+            <i class="fa-solid fa-share-nodes"></i> シェア
+        </button>
         <button onclick="resetScreen()" class="retry-btn">戻る</button>
     `;
 }
+
+// 簡易星座判定（変更なし）
 function getZodiac(m, d) {
     const dates = [20,19,21,20,21,22,23,23,23,24,22,22];
     const signs = ["山羊座","水瓶座","魚座","牡羊座","牡牛座","双子座","蟹座","獅子座","乙女座","天秤座","蠍座","射手座","山羊座"];
     return signs[m - (d < dates[m-1] ? 1 : 0)];
 }
-
-
 // ---------------------------------------------------
 // ❤️ 5. クラス相性（全キャラ画像変動対応！）
 // ---------------------------------------------------
@@ -443,6 +481,150 @@ function showCompResult(partner, score, rank) {
     updateYuukiFace(rank);
 }
 
+// ---------------------------------------------------
+// 🆓 自由入力フォームを表示
+// ---------------------------------------------------
+function showFreeCompForm() {
+    menuArea.style.display = "none";
+    freeCompForm.classList.remove("hidden");
+    yuukiVoice.innerHTML = "「おっ、クラス外の子？それとも…推し？<br>名前と写真があったら教えてよ。」";
+}
+
+// 🆓 自由入力占いの実行（画像処理つき！）
+function calculateFreeCompatibility() {
+    const targetName = targetNameInput.value.trim();
+    if (!targetName) {
+        alert("名前を入れてくれないと占えないよ〜💦");
+        return;
+    }
+
+    const file = targetImgInput.files[0]; // アップロードされたファイル
+
+    // 画像処理は時間がかかる(非同期)ので、関数を分けるかここで処理する
+    if (file) {
+        // 画像がある場合：読み込んでから結果表示
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            const customImgSrc = e.target.result; // 画像データ(Base64)
+            runFreeCompLogic(targetName, customImgSrc);
+        };
+        reader.readAsDataURL(file);
+    } else {
+        // 画像がない場合：nullを渡して実行
+        runFreeCompLogic(targetName, null);
+    }
+}
+
+// 自由占いの計算ロジック（画像データの有無を受け取る）
+function runFreeCompLogic(targetName, customImgSrc) {
+    stopBlinking();
+    freeCompForm.classList.add("hidden");
+    resultArea.classList.remove("hidden");
+
+    // 日替わり固定計算
+    const rand = getDailyRandom("freeComp" + targetName);
+    const score = Math.floor(rand * 101); 
+
+    let rank = "bad";
+    if (score >= 90) rank = "best";
+    else if (score >= 70) rank = "good";
+    else if (score >= 40) rank = "normal";
+
+    // ダミーパートナーデータ作成
+    const dummyPartner = {
+        id: "custom", // カスタムID
+        name: targetName,
+        fullname: targetName,
+        class: "？",
+        color: "#66a6ff", 
+        types: { mbti: "???", enneagram: "?", socio: "?" },
+        bio: "あなたが気になっている人物。<br>二人の運命やいかに…？",
+        // ★ここにカスタム画像をセット！
+        customImage: customImgSrc, 
+        comments: {
+            best: "（すごく良い雰囲気を感じる…！）",
+            good: "（まんざらでもない様子…？）",
+            normal: "（こっちを見ている気がする…）",
+            bad: "（今はそっとしておいた方がいいかも…）"
+        }
+    };
+
+    showCompResult(dummyPartner, score, rank);
+}
+
+
+// script.js の showCompResult 関数をこれに置き換えて！
+
+// 【重要】相性結果表示（戻り先判別ロジック追加版）
+function showCompResult(partner, score, rank) {
+    const userName = getName();
+    const types = partner.types || { mbti: "?", enneagram: "?", socio: "?" };
+    const color = partner.color || "#ccc";
+
+    let rawPartnerComment = partner.comments ? partner.comments[rank] : "…";
+    let partnerComment = rawPartnerComment.replace(/{user}/g, userName);
+
+    let yuukiComment = "";
+    if (rank === "best") yuukiComment = `すっげ！${userName}と相性バッチリじゃん！運命？`;
+    else if (rank === "good") yuukiComment = "おー、かなりいい感じ！仲良くなれるよ。";
+    else if (rank === "normal") yuukiComment = "ま、普通が一番平和ってことよ。";
+    else yuukiComment = "…ま、まあドンマイ！明日があるさ！";
+
+    // 画像パス決定
+    let partnerImgSrc;
+    if (partner.customImage) {
+        partnerImgSrc = partner.customImage;
+    } else {
+        let suffix = "";
+        if (rank === "best" || rank === "good") suffix = "_good";
+        else if (rank === "bad") suffix = "_bad";
+        partnerImgSrc = `images/${partner.id}${suffix}.png`;
+    }
+
+    // 🔄 戻るボタンの分岐ロジック！
+    let retryFunc = "startCompatibilityMenu()"; // デフォルト：クラス選択へ
+    let retryText = "他の子も占う";
+
+    if (partner.id === "custom") {
+        retryFunc = "showFreeCompForm()"; // カスタムの場合：自由入力フォームへ
+        retryText = "他の人を占う";
+    }
+
+    // HTML生成
+    resultArea.innerHTML = `
+        <h2 style="color:${color}">❤️ 相性診断結果</h2>
+        
+        <div class="partner-img">
+            <img src="${partnerImgSrc}" 
+                 onerror="this.src='images/default.png'; this.onerror=null;" 
+                 style="border-color:${color}; object-fit:cover;">
+        </div>
+        
+        <h3>${partner.fullname} <span style="font-size:0.8em">(${partner.class})</span></h3>
+        <div class="profile-info" style="border-left: 4px solid ${color}">
+            <div><span class="profile-tag">${types.mbti}</span><span class="profile-tag">${types.enneagram}</span><span class="profile-tag">${partner.motif || "?"}</span></div>
+            <p class="bio-text">${partner.bio || ""}</p>
+        </div>
+        <div class="score-box">相性度：<span class="score-num">${score}%</span></div>
+        <div class="dialogue-box partner-voice" style="border-left: 5px solid ${color}">
+            <span class="label">${partner.name}</span><p>「${partnerComment}」</p>
+        </div>
+        <div class="yuuki-comment-box"><span class="label">ゆうき</span><p>「${yuukiComment}」</p></div>
+        
+        <button onclick="shareResult('${partner.name}と${userName}の相性は${score}%！ #ゆうきの気まぐれ占い')" class="menu-btn share-btn">
+            <i class="fa-solid fa-share-nodes"></i> シェア
+        </button>
+        
+        <!-- 分岐させたボタン -->
+        <button onclick="${retryFunc}" class="retry-btn">
+            ${retryText}
+        </button>
+        
+        <button onclick="resetScreen()" class="retry-btn">トップに戻る</button>
+    `;
+    
+    updateYuukiFace(rank);
+}
 
 // ---------------------------------------------------
 // 🌙 6. 深読みモード
