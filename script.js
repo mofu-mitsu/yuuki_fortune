@@ -67,17 +67,21 @@ function getDailyRandom(uniqueKeyword) {
     return (hash % 1000) / 1000;
 }
 
-// 🔄 リセット
 function resetScreen() {
     menuArea.style.display = "block";
     compMenu.classList.add("hidden");
     selectForm.classList.add("hidden");
     birthdayForm.classList.add("hidden");
+    
+    // 👇【追加】これを忘れてた！自由入力フォームを隠す命令！
+    if(freeCompForm) freeCompForm.classList.add("hidden");
+    
     resultArea.classList.add("hidden");
-    resultArea.innerHTML = "";
+    resultArea.innerHTML = ""; // 結果を空っぽにする
     
     yuukiFace.src = "images/yuuki.png";
     yuukiVoice.innerHTML = `「おかえり、${getName()}。<br>次はどうする？」`;
+    
     startBlinking();
 }
 
@@ -486,6 +490,10 @@ function showCompResult(partner, score, rank) {
 // ---------------------------------------------------
 function showFreeCompForm() {
     menuArea.style.display = "none";
+    
+    // 👇【追加】結果画面から飛んできた時のために、結果エリアを隠す！
+    resultArea.classList.add("hidden");
+    
     freeCompForm.classList.remove("hidden");
     yuukiVoice.innerHTML = "「おっ、クラス外の子？それとも…推し？<br>名前と写真があったら教えてよ。」";
 }
