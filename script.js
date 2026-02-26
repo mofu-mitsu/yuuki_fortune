@@ -441,7 +441,6 @@ function calculateSpecificCompatibility() {
 // 【重要】相性結果表示
 function showCompResult(partner, score, rank) {
     const userName = getName();
-    const types = partner.types || { mbti: "?", enneagram: "?", socio: "?" };
     const color = partner.color || "#ccc";
 
     let rawPartnerComment = partner.comments ? partner.comments[rank] : "…（じっと見ている）";
@@ -470,7 +469,7 @@ function showCompResult(partner, score, rank) {
         
         <h3>${partner.fullname} <span style="font-size:0.8em">(${partner.class})</span></h3>
         <div class="profile-info" style="border-left: 4px solid ${color}">
-            <div><span class="profile-tag">${types.mbti}</span><span class="profile-tag">${types.enneagram}</span><span class="profile-tag">${partner.motif || ""}</span></div>
+            <div><span class="profile-tag">${partner.motif || ""}</span></div>
             <p class="bio-text">${partner.bio || ""}</p>
         </div>
         <div class="score-box">相性度：<span class="score-num">${score}%</span></div>
@@ -545,7 +544,6 @@ function runFreeCompLogic(targetName, customImgSrc) {
         fullname: targetName,
         class: "？",
         color: "#66a6ff", 
-        types: { mbti: "???", enneagram: "?", socio: "?" },
         bio: "あなたが気になっている人物。<br>二人の運命やいかに…？",
         // ★ここにカスタム画像をセット！
         customImage: customImgSrc, 
@@ -566,7 +564,6 @@ function runFreeCompLogic(targetName, customImgSrc) {
 // 【重要】相性結果表示（戻り先判別ロジック追加版）
 function showCompResult(partner, score, rank) {
     const userName = getName();
-    const types = partner.types || { mbti: "?", enneagram: "?", socio: "?" };
     const color = partner.color || "#ccc";
 
     let rawPartnerComment = partner.comments ? partner.comments[rank] : "…";
@@ -610,7 +607,7 @@ function showCompResult(partner, score, rank) {
         
         <h3>${partner.fullname} <span style="font-size:0.8em">(${partner.class})</span></h3>
         <div class="profile-info" style="border-left: 4px solid ${color}">
-            <div><span class="profile-tag">${types.mbti}</span><span class="profile-tag">${types.enneagram}</span><span class="profile-tag">${partner.motif || "?"}</span></div>
+            <div><span class="profile-tag">${partner.motif || "?"}</span></div>
             <p class="bio-text">${partner.bio || ""}</p>
         </div>
         <div class="score-box">相性度：<span class="score-num">${score}%</span></div>
