@@ -1,10 +1,25 @@
-
 <!DOCTYPE html>
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ゆうきの気まぐれ猫占い🔮</title>
+    
+    <!-- 📄 SEO & OGP設定（ここを追加！） -->
+    <meta name="description" content="とりの丘高校の占い師、ゆうきくんによる気まぐれ占い！今日の運勢、相性診断、そして夜限定の深読みモードも…？">
+    
+    <!-- SNSシェア設定 (OGP) -->
+    <meta property="og:title" content="ゆうきの気まぐれ猫占い🔮">
+    <meta property="og:description" content="「今日の運勢、見てく？あ、結果は気まぐれだけどね（笑）」">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://mofu-mitsu.github.io/yuuki_fortune/">
+    <meta property="og:image" content="https://mofu-mitsu.github.io/yuuki_fortune/images/ogp.png">
+    <meta name="twitter:card" content="summary">
+    
+    <!-- アイコン設定 (ファビコン) -->
+    <link rel="icon" href="images/yuuki.png">
+
+    <!-- フォント & CSS -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Kiwi+Maru:wght@500&family=Zen+Maru+Gothic:wght@700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
@@ -32,41 +47,56 @@
             </div>
         </header>
 
-                <!-- メニューボタンエリア -->
+        <!-- メニューボタンエリア -->
         <nav class="menu-list" id="menu-area">
-            <!-- 1. 今日の運勢（これは固定にする！） -->
+            <!-- 1. 今日の運勢 -->
             <button onclick="startDailyFortune()" class="menu-btn">
-                <i class="fa-solid fa-calendar-day"></i> 今日の運勢（タロット）<br><span style="font-size:0.8em">（結果は1日1回固定！）</span>
+                <i class="fa-solid fa-calendar-day"></i> 今日の運勢（タロット）<br>
+                <span style="font-size:0.8em">（結果は1日1回固定！）</span>
             </button>
             
-            <!-- 🆕 2. 完全ランダム運勢（ここに追加！） -->
+            <!-- 2. 今、この瞬間の運勢 -->
             <button onclick="startRandomFortune()" class="menu-btn" style="background: linear-gradient(90deg, #43e97b, #38f9d7);">
-                <i class="fa-solid fa-dice"></i> 今、この瞬間の運勢<br><span style="font-size:0.8em">（何度でも引けるよ！）</span>
+                <i class="fa-solid fa-dice"></i> 今、この瞬間の運勢<br>
+                <span style="font-size:0.8em">（何度でも引けるよ！）</span>
             </button>
             
-            <!-- 3. 項目別運勢（ボタン復活！） -->
+            <!-- 3. 項目別運勢 -->
             <button onclick="startCategoryFortune()" class="menu-btn" style="background: linear-gradient(90deg, #ff9a9e, #fecfef);">
                 <i class="fa-solid fa-chart-pie"></i> 項目別運勢<br>
                 <span style="font-size:0.8em">（恋愛・創作・金運など）</span>
             </button>
 
-            <!-- 4. 誕生日・星座占い（NEWボタン！） -->
+            <!-- 4. 誕生日・星座占い -->
             <button onclick="showBirthdayForm()" class="menu-btn" style="background: linear-gradient(90deg, #a18cd1, #fbc2eb);">
                 <i class="fa-solid fa-star"></i> 誕生日・星座占い<br>
                 <span style="font-size:0.8em">（あなたへのメッセージ）</span>
             </button>
+
             <!-- 5. クラス相性 -->
             <button onclick="startCompatibilityMenu()" class="menu-btn" style="background: linear-gradient(90deg, #DA22FF, #9733EE);">
-                <i class="fa-solid fa-heart-pulse"></i> クラス相性占い
+                <i class="fa-solid fa-heart-pulse"></i> クラス相性占い<br>
+                <span style="font-size:0.8em">（キャラクターとの相性）</span>
             </button>
-            <!-- 6. 相性  -->
+
+            <!-- 6. 自由入力相性 -->
             <button onclick="showFreeCompForm()" class="menu-btn" style="background: linear-gradient(90deg, #89f7fe, #66a6ff);">
-                <i class="fa-solid fa-pen-fancy"></i> 自由入力で相性占い<br><span style="font-size:0.8em">（推しや友達の名前で！）</span>
+                <i class="fa-solid fa-pen-fancy"></i> 自由入力で相性占い<br>
+                <span style="font-size:0.8em">（推しや友達の名前で！）</span>
             </button>
+            
             <!-- 7. 深読み -->
             <button onclick="startDeepReading()" class="menu-btn night-only">
-                <i class="fa-solid fa-moon"></i> 深読みモード
+                <i class="fa-solid fa-moon"></i> 深読みモード<br>
+                <span style="font-size:0.8em">（夜限定）</span>
             </button>
+
+            <!-- 🏠 ホームへ戻るリンク（ここを追加！） -->
+            <div class="home-link-area">
+                <a href="https://mofu-mitsu.github.io/" class="home-link">
+                    <i class="fa-solid fa-house"></i> サイトのホームへ戻る
+                </a>
+            </div>
         </nav>
 
         <!-- 🆕 誕生日入力フォーム -->
@@ -75,11 +105,9 @@
             <div style="display: flex; gap: 10px; justify-content: center;">
                 <select id="birth-month">
                     <option value="">月</option>
-                    <!-- JSで1~12月を入れる -->
                 </select>
                 <select id="birth-day">
                     <option value="">日</option>
-                    <!-- JSで1~31日を入れる -->
                 </select>
             </div>
             <button onclick="startBirthdayFortune()" class="menu-btn">占う！</button>
@@ -111,7 +139,6 @@
                 <option value="2-2">2年2組</option>
                 <option value="3-1">3年1組</option>
                 <option value="3-2">3年2組</option>
-                <!-- 必要ならクラス追加 -->
             </select>
             <br>
             <select id="member-select">
@@ -121,27 +148,25 @@
             <button onclick="calculateSpecificCompatibility()" class="menu-btn">占う！</button>
             <button onclick="startCompatibilityMenu()" class="retry-btn">戻る</button>
         </div>
-        <!-- 自由入力フォーム（更新版） -->
+
+        <!-- 自由入力フォーム -->
         <div id="free-comp-form" class="hidden">
             <h3>誰との相性をみる？</h3>
-            
             <div class="name-input-area">
                 <label>① 相手の名前</label>
                 <input type="text" id="target-name" placeholder="推し・友達・etc...">
             </div>
-            
             <div class="name-input-area" style="margin-top:10px; background: rgba(255,255,255,0.1);">
                 <label>② 画像 (あれば)</label>
-                <!-- クラスなどはつけなくてもCSSの input[type="file"] が効くよ -->
                 <input type="file" id="target-img-file" accept="image/*">
                 <p style="font-size:0.75em; color:#ddd; margin-top:5px;">※画像がない場合はシルエットになります</p>
             </div>
-
             <br>
             <button onclick="calculateFreeCompatibility()" class="menu-btn">この人と占う！</button>
             <button onclick="resetScreen()" class="retry-btn">戻る</button>
         </div>
-        <!-- 結果表示エリア（ここだけに結果を出す！） -->
+
+        <!-- 結果表示エリア -->
         <div id="result-area" class="hidden"></div>
 
     </div>
