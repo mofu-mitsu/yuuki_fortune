@@ -12,6 +12,7 @@ const nameInput = document.getElementById("user-name");
 const freeCompForm = document.getElementById("free-comp-form"); 
 const targetNameInput = document.getElementById("target-name");
 const targetImgInput = document.getElementById("target-img-file");
+
 // ⏳ 瞬き用のタイマー変数
 let blinkInterval;
 
@@ -34,6 +35,12 @@ function getName() {
     let name = nameInput.value.trim();
     if (!name) name = "キミ";
     return name;
+}
+
+// 🛠️ シェア用テキスト整形関数（これを追加！）
+function safeText(text) {
+    // 改行をスペースに、シングルクォートをエスケープする
+    return text.replace(/\n/g, ' ').replace(/'/g, "’");
 }
 
 // 👀 瞬き機能
@@ -73,7 +80,7 @@ function resetScreen() {
     selectForm.classList.add("hidden");
     birthdayForm.classList.add("hidden");
     
-    // 👇【追加】これを忘れてた！自由入力フォームを隠す命令！
+    // 自由入力フォームを隠す
     if(freeCompForm) freeCompForm.classList.add("hidden");
     
     resultArea.classList.add("hidden");
@@ -88,7 +95,6 @@ function resetScreen() {
 
 // ---------------------------------------------------
 // 🔮 1. 今日の運勢（タロット）
-// ➡ 裏面からのめくり演出追加！
 // ---------------------------------------------------
 function startDailyFortune() {
     stopBlinking();
@@ -105,9 +111,11 @@ function startDailyFortune() {
     const card = tarotDeck[cardIndex];
     const comment = card.yuukiComment.replace(/{user}/g, userName);
     const cardImg = card.image || ""; 
+    
+    // シェア用テキスト
+    const shareTxt = safeText(`【今日の運勢】${card.name}！ゆうき「${comment}」 #ゆうきの気まぐれ占い`);
 
-    // HTML生成（カードは裏面のまま）
-    // 裏面画像がない場合は単色を表示する安全策つき
+    // HTML生成
     resultArea.innerHTML = `
         <h2>📅 今日の運勢結果</h2>
         
@@ -133,8 +141,8 @@ function startDailyFortune() {
             </div>
             ${card.recommendLink ? `<a href="${card.recommendLink}" target="_blank" class="link-btn"><i class="fa-solid fa-gamepad"></i> ${card.recommendText}</a>` : ''}
             
-            <button onclick="shareResult('【今日の運勢】${card.name}！ゆうき「${comment}」 #ゆうきの気まぐれ占い')" class="menu-btn share-btn">
-                <i class="fa-solid fa-share-nodes"></i> 今日の結果をシェア
+            <button onclick="shareResult('${shareTxt}')" class="menu-btn share-btn">
+                <i class="fa-solid fa-share-nodes"></i> シェア
             </button>
             <button onclick="resetScreen()" class="retry-btn">戻る</button>
         </div>
@@ -160,7 +168,6 @@ function startDailyFortune() {
 
 // ---------------------------------------------------
 // 🔮 2. 今、この瞬間の運勢（水晶玉）
-// ➡ {user}変換バグ修正済み！
 // ---------------------------------------------------
 function startRandomFortune() {
     stopBlinking();
@@ -180,11 +187,12 @@ function startRandomFortune() {
     setTimeout(() => {
         // メッセージ取得
         let msg = crystalMessages[Math.floor(Math.random() * crystalMessages.length)];
-        // 🔧 ここで置換を実行！！
         msg = msg.replace(/{user}/g, userName);
 
         const item = luckyItems[Math.floor(Math.random() * luckyItems.length)];
         const color = luckyColors[Math.floor(Math.random() * luckyColors.length)];
+        
+        const shareTxt = safeText(`今のラッキーアイテムは【${item}】！水晶のお告げ「${msg}」 #ゆうきの気まぐれ占い`);
 
         resultArea.innerHTML = `
             <h2>🔮 水晶玉の啓示</h2>
@@ -200,7 +208,7 @@ function startRandomFortune() {
             </div>
             <div style="margin-top:15px;">
                 <button onclick="startRandomFortune()" class="menu-btn" style="background: linear-gradient(90deg, #43e97b, #38f9d7); color:#333;"><i class="fa-solid fa-rotate"></i> もう一回覗く</button>
-                <button onclick="shareResult('今のラッキーアイテムは【${item}】！水晶のお告げ「${msg}」 #ゆうきの気まぐれ占い')" class="menu-btn share-btn"><i class="fa-solid fa-share-nodes"></i> 結果をシェア</button>
+                <button onclick="shareResult('${shareTxt}')" class="menu-btn share-btn"><i class="fa-solid fa-share-nodes"></i> シェア</button>
                 <button onclick="resetScreen()" class="retry-btn">トップに戻る</button>
             </div>
         `;
@@ -211,7 +219,6 @@ function startRandomFortune() {
 
 // ---------------------------------------------------
 // 📊 3. 項目別運勢
-// ➡ グラフがグイーンと伸びる演出追加！
 // ---------------------------------------------------
 function startCategoryFortune() {
     stopBlinking();
@@ -231,6 +238,8 @@ function startCategoryFortune() {
     else if (work > 90) totalComment = "創作の神が降りてきてる！今すぐ何か書きなよ！";
     else if (money > 90) totalComment = "金運やば！奢ってよ（笑）";
     else if (love < 20 && human < 20) totalComment = "…今日は家で大人しく寝とこう。ね？";
+    
+    const shareTxt = safeText(`【${userName}の運勢】恋愛${love}% 創作${work}% 金運${money}%！ #ゆうきの気まぐれ占い`);
 
     // 初期状態は width: 0% で描画
     resultArea.innerHTML = `
@@ -257,11 +266,11 @@ function startCategoryFortune() {
         </div>
 
         <div class="yuuki-comment-box"><span class="label">ゆうき</span><p>「${totalComment}」</p></div>
-        <button onclick="shareResult('【${userName}の運勢】恋愛${love}% 創作${work}% 金運${money}%！ #ゆうきの気まぐれ占い')" class="menu-btn share-btn"><i class="fa-solid fa-share-nodes"></i> シェア</button>
+        <button onclick="shareResult('${shareTxt}')" class="menu-btn share-btn"><i class="fa-solid fa-share-nodes"></i> シェア</button>
         <button onclick="resetScreen()" class="retry-btn">戻る</button>
     `;
 
-    // 描画後少し待ってからグラフを伸ばす（これでアニメーションになる）
+    // 描画後少し待ってからグラフを伸ばす
     setTimeout(() => {
         document.getElementById("bar-love").style.width = `${love}%`;
         document.getElementById("bar-work").style.width = `${work}%`;
@@ -284,10 +293,8 @@ function startCategoryFortune() {
 }
 
 
-// script.js の startBirthdayFortune をこれに書き換え！
-
 // ---------------------------------------------------
-// 🎂 4. 誕生日・星座占い（当日お祝い機能付き！）
+// 🎂 4. 誕生日・星座占い
 // ---------------------------------------------------
 function showBirthdayForm() {
     menuArea.style.display = "none";
@@ -311,8 +318,6 @@ function startBirthdayFortune() {
     
     // 星座判定
     const zodiac = getZodiac(month, day);
-    
-    // 運勢指数（日替わり固定）
     const luckScore = Math.floor(getDailyRandom("zodiac" + month + day) * 100);
     
     // 今日が誕生日かチェック！🎉
@@ -320,27 +325,24 @@ function startBirthdayFortune() {
     const isBirthday = (today.getMonth() + 1 === month) && (today.getDate() === day);
 
     let msg = "";
-    let specialEffect = ""; // お祝い演出用HTML
+    let specialEffect = ""; 
 
     if (isBirthday) {
-        // 誕生日おめでとうモード！！🎂
-        yuukiFace.src = "images/yuuki_good.png"; // 満面の笑み
+        yuukiFace.src = "images/yuuki_good.png"; 
         msg = `えっ、今日誕生日なの！？<br>おめでとーーー！！🎉<br>君にとって最高の一年になりますように！`;
-        
-        // ケーキとかクラッカーの絵文字を降らせる？（簡易的に表示）
         specialEffect = `
             <div style="font-size:4rem; animation: bounce 1s infinite;">🎂🎉🎁</div>
             <p style="color:#ff69b4; font-weight:bold; font-size:1.2rem;">HAPPY BIRTHDAY!!</p>
         `;
     } else {
-        // 通常モード
         yuukiFace.src = "images/yuuki.png";
         if(luckScore > 80) msg = "星が味方してる！願い事叶うかもよ？";
         else if(luckScore > 50) msg = "可もなく不可もなく。いつも通りが一番！";
         else msg = "ちょっと星の巡りが乱れてるかも。深呼吸してリラックスして。";
-        
         specialEffect = `<div style="font-size:3rem;">✨</div>`;
     }
+    
+    const shareTxt = safeText(`${userName}(${zodiac})の今日の運勢は${luckScore}！ #ゆうきの気まぐれ占い`);
 
     resultArea.innerHTML = `
         <h2>⭐ 星座占い結果</h2>
@@ -354,19 +356,21 @@ function startBirthdayFortune() {
             <p>「${msg}」</p>
         </div>
         
-        <button onclick="shareResult('${userName}(${zodiac})の今日の運勢は${luckScore}！ #ゆうきの気まぐれ占い')" class="menu-btn share-btn">
+        <button onclick="shareResult('${shareTxt}')" class="menu-btn share-btn">
             <i class="fa-solid fa-share-nodes"></i> シェア
         </button>
         <button onclick="resetScreen()" class="retry-btn">戻る</button>
     `;
 }
 
-// 簡易星座判定（変更なし）
+// 簡易星座判定
 function getZodiac(m, d) {
     const dates = [20,19,21,20,21,22,23,23,23,24,22,22];
     const signs = ["山羊座","水瓶座","魚座","牡羊座","牡牛座","双子座","蟹座","獅子座","乙女座","天秤座","蠍座","射手座","山羊座"];
     return signs[m - (d < dates[m-1] ? 1 : 0)];
 }
+
+
 // ---------------------------------------------------
 // ❤️ 5. クラス相性（全キャラ画像変動対応！）
 // ---------------------------------------------------
@@ -441,6 +445,7 @@ function calculateSpecificCompatibility() {
 // 【重要】相性結果表示
 function showCompResult(partner, score, rank) {
     const userName = getName();
+    const types = partner.types || { mbti: "?", enneagram: "?", socio: "?" };
     const color = partner.color || "#ccc";
 
     let rawPartnerComment = partner.comments ? partner.comments[rank] : "…（じっと見ている）";
@@ -456,20 +461,35 @@ function showCompResult(partner, score, rank) {
     if (rank === "best" || rank === "good") suffix = "_good";
     else if (rank === "bad") suffix = "_bad";
     
-    let partnerImgSrc = `images/${partner.id}${suffix}.png`;
+    let partnerImgSrc;
+    if (partner.customImage) {
+        partnerImgSrc = partner.customImage;
+    } else {
+        partnerImgSrc = `images/${partner.id}${suffix}.png`;
+    }
+
+    // 戻り先判別
+    let retryFunc = "startCompatibilityMenu()";
+    let retryText = "他の子も占う";
+    if (partner.id === "custom") {
+        retryFunc = "showFreeCompForm()";
+        retryText = "他の人を占う";
+    }
+    
+    const shareTxt = safeText(`${partner.name}と${userName}の相性は${score}%！ #ゆうきの気まぐれ占い`);
 
     resultArea.innerHTML = `
         <h2 style="color:${color}">❤️ 相性診断結果</h2>
         
         <div class="partner-img">
             <img src="${partnerImgSrc}" 
-                 onerror="this.src='images/${partner.id}.png'; this.onerror=null;" 
-                 style="border-color:${color}">
+                 onerror="this.src='images/default.png'; this.onerror=null;" 
+                 style="border-color:${color}; object-fit:cover;">
         </div>
         
         <h3>${partner.fullname} <span style="font-size:0.8em">(${partner.class})</span></h3>
         <div class="profile-info" style="border-left: 4px solid ${color}">
-            <div><span class="profile-tag">${partner.motif || ""}</span></div>
+            <div><span class="profile-tag">${types.mbti}</span><span class="profile-tag">${types.enneagram}</span><span class="profile-tag">${partner.motif || "?"}</span></div>
             <p class="bio-text">${partner.bio || ""}</p>
         </div>
         <div class="score-box">相性度：<span class="score-num">${score}%</span></div>
@@ -477,8 +497,15 @@ function showCompResult(partner, score, rank) {
             <span class="label">${partner.name}</span><p>「${partnerComment}」</p>
         </div>
         <div class="yuuki-comment-box"><span class="label">ゆうき</span><p>「${yuukiComment}」</p></div>
-        <button onclick="shareResult('${partner.name}と${userName}の相性は${score}%！ #ゆうきの気まぐれ占い')" class="menu-btn share-btn"><i class="fa-solid fa-share-nodes"></i> シェア</button>
-        <button onclick="startCompatibilityMenu()" class="retry-btn">他の子も占う</button>
+        
+        <button onclick="shareResult('${shareTxt}')" class="menu-btn share-btn">
+            <i class="fa-solid fa-share-nodes"></i> シェア
+        </button>
+        
+        <button onclick="${retryFunc}" class="retry-btn">
+            ${retryText}
+        </button>
+        
         <button onclick="resetScreen()" class="retry-btn">トップに戻る</button>
     `;
     updateYuukiFace(rank);
@@ -489,10 +516,7 @@ function showCompResult(partner, score, rank) {
 // ---------------------------------------------------
 function showFreeCompForm() {
     menuArea.style.display = "none";
-    
-    // 👇【追加】結果画面から飛んできた時のために、結果エリアを隠す！
     resultArea.classList.add("hidden");
-    
     freeCompForm.classList.remove("hidden");
     yuukiVoice.innerHTML = "「おっ、クラス外の子？それとも…推し？<br>名前と写真があったら教えてよ。」";
 }
@@ -505,30 +529,26 @@ function calculateFreeCompatibility() {
         return;
     }
 
-    const file = targetImgInput.files[0]; // アップロードされたファイル
+    const file = targetImgInput.files[0]; 
 
-    // 画像処理は時間がかかる(非同期)ので、関数を分けるかここで処理する
     if (file) {
-        // 画像がある場合：読み込んでから結果表示
         const reader = new FileReader();
         reader.onload = function(e) {
-            const customImgSrc = e.target.result; // 画像データ(Base64)
+            const customImgSrc = e.target.result;
             runFreeCompLogic(targetName, customImgSrc);
         };
         reader.readAsDataURL(file);
     } else {
-        // 画像がない場合：nullを渡して実行
         runFreeCompLogic(targetName, null);
     }
 }
 
-// 自由占いの計算ロジック（画像データの有無を受け取る）
+// 自由占いの計算ロジック
 function runFreeCompLogic(targetName, customImgSrc) {
     stopBlinking();
     freeCompForm.classList.add("hidden");
     resultArea.classList.remove("hidden");
 
-    // 日替わり固定計算
     const rand = getDailyRandom("freeComp" + targetName);
     const score = Math.floor(rand * 101); 
 
@@ -537,15 +557,14 @@ function runFreeCompLogic(targetName, customImgSrc) {
     else if (score >= 70) rank = "good";
     else if (score >= 40) rank = "normal";
 
-    // ダミーパートナーデータ作成
     const dummyPartner = {
-        id: "custom", // カスタムID
+        id: "custom", 
         name: targetName,
         fullname: targetName,
         class: "？",
         color: "#66a6ff", 
+        types: { mbti: "???", enneagram: "?", socio: "?" },
         bio: "あなたが気になっている人物。<br>二人の運命やいかに…？",
-        // ★ここにカスタム画像をセット！
         customImage: customImgSrc, 
         comments: {
             best: "（すごく良い雰囲気を感じる…！）",
@@ -558,78 +577,6 @@ function runFreeCompLogic(targetName, customImgSrc) {
     showCompResult(dummyPartner, score, rank);
 }
 
-
-// script.js の showCompResult 関数をこれに置き換えて！
-
-// 【重要】相性結果表示（戻り先判別ロジック追加版）
-function showCompResult(partner, score, rank) {
-    const userName = getName();
-    const color = partner.color || "#ccc";
-
-    let rawPartnerComment = partner.comments ? partner.comments[rank] : "…";
-    let partnerComment = rawPartnerComment.replace(/{user}/g, userName);
-
-    let yuukiComment = "";
-    if (rank === "best") yuukiComment = `すっげ！${userName}と相性バッチリじゃん！運命？`;
-    else if (rank === "good") yuukiComment = "おー、かなりいい感じ！仲良くなれるよ。";
-    else if (rank === "normal") yuukiComment = "ま、普通が一番平和ってことよ。";
-    else yuukiComment = "…ま、まあドンマイ！明日があるさ！";
-
-    // 画像パス決定
-    let partnerImgSrc;
-    if (partner.customImage) {
-        partnerImgSrc = partner.customImage;
-    } else {
-        let suffix = "";
-        if (rank === "best" || rank === "good") suffix = "_good";
-        else if (rank === "bad") suffix = "_bad";
-        partnerImgSrc = `images/${partner.id}${suffix}.png`;
-    }
-
-    // 🔄 戻るボタンの分岐ロジック！
-    let retryFunc = "startCompatibilityMenu()"; // デフォルト：クラス選択へ
-    let retryText = "他の子も占う";
-
-    if (partner.id === "custom") {
-        retryFunc = "showFreeCompForm()"; // カスタムの場合：自由入力フォームへ
-        retryText = "他の人を占う";
-    }
-
-    // HTML生成
-    resultArea.innerHTML = `
-        <h2 style="color:${color}">❤️ 相性診断結果</h2>
-        
-        <div class="partner-img">
-            <img src="${partnerImgSrc}" 
-                 onerror="this.src='images/default.png'; this.onerror=null;" 
-                 style="border-color:${color}; object-fit:cover;">
-        </div>
-        
-        <h3>${partner.fullname} <span style="font-size:0.8em">(${partner.class})</span></h3>
-        <div class="profile-info" style="border-left: 4px solid ${color}">
-            <div><span class="profile-tag">${partner.motif || "?"}</span></div>
-            <p class="bio-text">${partner.bio || ""}</p>
-        </div>
-        <div class="score-box">相性度：<span class="score-num">${score}%</span></div>
-        <div class="dialogue-box partner-voice" style="border-left: 5px solid ${color}">
-            <span class="label">${partner.name}</span><p>「${partnerComment}」</p>
-        </div>
-        <div class="yuuki-comment-box"><span class="label">ゆうき</span><p>「${yuukiComment}」</p></div>
-        
-        <button onclick="shareResult('${partner.name}と${userName}の相性は${score}%！ #ゆうきの気まぐれ占い')" class="menu-btn share-btn">
-            <i class="fa-solid fa-share-nodes"></i> シェア
-        </button>
-        
-        <!-- 分岐させたボタン -->
-        <button onclick="${retryFunc}" class="retry-btn">
-            ${retryText}
-        </button>
-        
-        <button onclick="resetScreen()" class="retry-btn">トップに戻る</button>
-    `;
-    
-    updateYuukiFace(rank);
-}
 
 // ---------------------------------------------------
 // 🌙 6. 深読みモード
@@ -673,6 +620,8 @@ function startDeepReading() {
         const randomThought = thoughts[Math.floor(Math.random() * thoughts.length)].replace(/{user}/g, userName);
         const keyword = shadowKeywords[Math.floor(Math.random() * shadowKeywords.length)];
         const mission = midnightMissions[Math.floor(Math.random() * midnightMissions.length)];
+        
+        const shareTxt = safeText(`夜の深層心理…キーワードは『${keyword}』。ゆうき「${randomThought}」 #ゆうきの気まぐれ占い`);
 
         resultArea.innerHTML = `
             <h2>🌙 深層心理の結果</h2>
@@ -682,7 +631,7 @@ function startDeepReading() {
                 <p style="font-size:1.1em; font-family:'Zen Maru Gothic'">「…ねえ、${userName}。<br>${randomThought}」</p>
             </div>
             <div class="mission-box"><span class="mission-label">MIDNIGHT MISSION</span><i class="fa-solid fa-candle-holder"></i> ${mission}</div>
-            <button onclick="shareResult('夜の深層心理…キーワードは『${keyword}』。ゆうき「${randomThought}」 #ゆうきの気まぐれ占い')" class="menu-btn share-btn"><i class="fa-solid fa-share-nodes"></i> 静かにシェアする</button>
+            <button onclick="shareResult('${shareTxt}')" class="menu-btn share-btn"><i class="fa-solid fa-share-nodes"></i> 静かにシェアする</button>
             <button onclick="resetScreen()" class="retry-btn">朝の世界へ戻る</button>
         `;
     }, 2500);
@@ -698,11 +647,27 @@ function updateYuukiFace(type) {
     else yuukiFace.src = "images/yuuki.png"; 
 }
 
+// 🔧 シェア機能（クリップボードコピー対応）
 function shareResult(text) {
     if (navigator.share) {
-        navigator.share({ title: 'ゆうきの気まぐれ猫占い🔮', text: text, url: window.location.href })
+        navigator.share({
+            title: 'ゆうきの気まぐれ猫占い🔮',
+            text: text,
+            url: window.location.href
+        })
         .catch((e) => console.log('シェアキャンセル', e));
-    } else {
-        alert("シェア内容をコピーしたよ！\n\n" + text);
+    } 
+    else {
+        if (navigator.clipboard) {
+            navigator.clipboard.writeText(text + " " + window.location.href)
+            .then(() => {
+                alert("シェア内容をコピーしたよ！\nSNSに貼り付けてね✨\n\n" + text);
+            })
+            .catch(() => {
+                alert("ごめん、コピーできなかった💦\n以下のテキストを使ってね！\n\n" + text);
+            });
+        } else {
+            alert("この端末ではシェア機能が使えないみたい💦\n以下のテキストを使ってね！\n\n" + text);
+        }
     }
 }
