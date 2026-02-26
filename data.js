@@ -1942,7 +1942,7 @@ const classmates = [
         }
     },
     { 
-        id: "gohoubi",
+        id: "nui",
         name: "ご褒美",
         fullname: "栄城 縫（えいしろ ぬい）",
         class: "3-1",
@@ -2841,3 +2841,4 @@ const luckyColors = [
     "真夜中のミッドナイトブルー",
     "透明（今日は気配を消していこw）"
 ];
+
