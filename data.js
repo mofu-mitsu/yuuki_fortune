@@ -264,7 +264,7 @@ const classmates = [
         fullname: "速川 楓（はやかわ かえで）",
         class: "1-1",
         gender: "Female",
-        types: { mbti: "ENTP", enneagram: "3w4", socio: "ILE" },
+        types: { mbti: "ENTP", enneagram: "3w4", socio: "LIE" },
         motif: "猫",
         bio: "自分が世界一美しいと思っているわがまま女子。",
         color: "#b22222", // 紅葉の赤
@@ -400,7 +400,7 @@ const classmates = [
         fullname: "岩結 未来（いわい みらい）",
         class: "1-2",
         gender: "Female",
-        types: { mbti: "ENFJ", enneagram: "3w4", socio: "EIE" },
+        types: { mbti: "ENFJ", enneagram: "3w4", socio: "IEE" },
         motif: "たぬき",
         bio: "明るくて面倒見のいい負けず嫌い。ゲーム好きだが下手。",
         color: "#8b4513", // たぬきブラウン
@@ -706,7 +706,7 @@ const classmates = [
         fullname: "井之尾 希空（いのお きそら）",
         class: "1-3",
         gender: "Female",
-        types: { mbti: "INFP", enneagram: "4w5", socio: "IEI" },
+        types: { mbti: "INFP", enneagram: "4w5", socio: "SEI" },
         motif: "猫",
         bio: "人見知りな舌足らず女子。大人になりたくない。",
         color: "#e6e6fa", // ラベンダー
@@ -774,7 +774,7 @@ const classmates = [
         fullname: "自念 頼（じねん たより）",
         class: "1-3",
         gender: "Male",
-        types: { mbti: "ENFJ", enneagram: "2w1", socio: "EIE" },
+        types: { mbti: "ENFJ", enneagram: "2w1", socio: "EII" },
         motif: "ボロニーズ",
         bio: "八方美人で温厚な文系男子。",
         color: "#fffaf0", // フローラルホワイト
@@ -876,7 +876,7 @@ const classmates = [
         fullname: "中井 空羽（なかい くう）",
         class: "1-3",
         gender: "Female",
-        types: { mbti: "INTJ", enneagram: "5w4", socio: "ILI" },
+        types: { mbti: "INTP", enneagram: "5w4", socio: "ILI" },
         motif: "カラス",
         bio: "不器用な陰キャ女子。のりおみの理解者。",
         color: "#2f4f4f", // ダークスレートグレイ
@@ -893,7 +893,7 @@ const classmates = [
         fullname: "永丘 紀臣（ながおか のりおみ）",
         class: "1-3",
         gender: "Male",
-        types: { mbti: "INTP", enneagram: "5w6", socio: "LII" },
+        types: { mbti: "INTJ", enneagram: "5w6", socio: "LII" },
         motif: "クマ",
         bio: "社交辞令の塊。世界を信じていない。",
         color: "#696969", // ディムグレー
@@ -1063,7 +1063,7 @@ const classmates = [
         fullname: "槐原 潤（えずはら うるう）",
         class: "1-4",
         gender: "Female",
-        types: { mbti: "ISTP", enneagram: "9w8", socio: "SLI" },
+        types: { mbti: "ISFP", enneagram: "9w8", socio: "SLI" },
         motif: "イワシャコ",
         bio: "長崎出身のミリオタ。指示語に過剰反応する。",
         color: "#556b2f", // オリーブドラブ（迷彩っぽい色）
@@ -1080,7 +1080,7 @@ const classmates = [
         fullname: "栢島 遥香（かやしま はるか）",
         class: "1-4",
         gender: "Female",
-        types: { mbti: "ENFJ", enneagram: "2w3", socio: "EIE" },
+        types: { mbti: "ENFJ", enneagram: "2w3", socio: "EII" },
         motif: "ウグイス",
         bio: "明るく天然なウグイス女子。",
         color: "#9acd32", // ウグイス色
@@ -1097,7 +1097,7 @@ const classmates = [
         fullname: "狩生 彗威（かりう すい）",
         class: "1-4",
         gender: "Male",
-        types: { mbti: "ESTP", enneagram: "8w7", socio: "SLE" },
+        types: { mbti: "ESTP", enneagram: "8w7", socio: "SEE" },
         motif: "プレーリードッグ",
         bio: "勉強嫌いな俊足不良。実は仲間想い。",
         color: "#daa520", // ゴールデンロッド
@@ -1590,7 +1590,7 @@ const classmates = [
         fullname: "水上 亮吾（みずかみ りょうご）",
         class: "2-1",
         gender: "Male",
-        types: { mbti: "INTJ", enneagram: "5w6", socio: "LSI-Ni" },
+        types: { mbti: "INTJ", enneagram: "5w6", socio: "LSI" },
         motif: "青虫",
         bio: "構造重視の機械いじり屋。水兵部の技術担当。",
         color: "#32cdab", 
@@ -2100,7 +2100,7 @@ const classmates = [
         fullname: "夢咲 美環（ゆめさき みわ）",
         class: "3-1",
         gender: "Female",
-        types: { mbti: "ENFJ", enneagram: "2w3", socio: "EIE" },
+        types: { mbti: "ENFJ", enneagram: "2w3", socio: "ESE" },
         motif: "トナカイ",
         bio: "爽やかサンタガール。ラッピング得意。",
         color: "#ff0000", // サンタの赤
@@ -2841,4 +2841,3 @@ const luckyColors = [
     "真夜中のミッドナイトブルー",
     "透明（今日は気配を消していこw）"
 ];
-
