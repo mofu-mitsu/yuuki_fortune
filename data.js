@@ -1490,7 +1490,7 @@ const classmates = [
         gender: "Male",
         types: { mbti: "INTJ", enneagram: "5w6", socio: "LII" },
         motif: "もやし",
-        bio: "滋賀出身の影薄い系男子。失敗ログを検証する。",
+        bio: "影薄い系男子。失敗ログを検証する。",
         color: "#98fb98", // もやしの淡い緑
         comments: {
             best: "{user}、…俺を見つけてくれたん？この数値、エラーやないなら…ええ結果やと思う。",
@@ -1641,15 +1641,15 @@ const classmates = [
         fullname: "藍河 八重（あいかわ やえ）",
         class: "2-2",
         gender: "Female",
-        types: { mbti: "INTP", enneagram: "5w6", socio: "LII" },
+        types: { mbti: "INTJ", enneagram: "5w6", socio: "LII" },
         motif: "ハリネズミ",
         bio: "「私」の構成要素を考える無口な哲学女子。",
         color: "#de87d0",
         comments: {
-            best: "…興味深い。{user}、貴方という存在は、私の「私」を補完する要素かもしれない。",
-            good: "悪くない。{user}となら、互いの領域を侵食せずに共存できそう。",
-            normal: "ふうん。{user}から見た私は、どう映ってるの？…答える前に考えて。",
-            bad: "…理解不能。{user}、貴方といると思考にノイズが走る。離れて。"
+            best: "……故に、{user}と話すのは嫌いではない。自分一人では気付かぬ事も、あるものだな。",
+            good: "悪くない。互いに無理をせずとも、同じ場に居られる。それで充分だろう。",
+            normal: "……私がどう見えるか、か。貴方の目には、そう映るのだな。",
+            bad: "……合わぬな。無理に解り合おうとする必要もあるまい。"
         }
     },
     { 
