@@ -2470,7 +2470,7 @@ const classmates = [
         }
     },
     { 
-        id: "yo",
+        id: "you",
         name: "よう",
         fullname: "七理 耀（しちり　よう）",
         class: "M1-1",
@@ -2674,7 +2674,7 @@ const classmates = [
         }
     },
     { 
-        id: "kosumo",
+        id: "cosmo",
         name: "こすも",
         fullname: "赤石田 秋桜（あかしだ　こすも）",
         class: "M1-2",
@@ -2742,7 +2742,7 @@ const classmates = [
         }
     },
     { 
-        id: "jogo",
+        id: "jougo",
         name: "じょうご",
         fullname: "金札 静悟（かなふだ　じょうご）",
         class: "M1-2",
@@ -2895,7 +2895,7 @@ const classmates = [
         }
     },
     {
-        id: "michiko",
+        id: "michikou",
         name: "みちこう",
         fullname: "鉛山 充煌（なまりやま　みちこう）",
         class: "M1-2",
@@ -2946,7 +2946,7 @@ const classmates = [
         }
     },
     {
-        id: "miyu",
+        id: "miyuu",
         name: "みゆう",
         fullname: "杠葉 美優（ゆずりは　みゆう）",
         class: "M1-2",
@@ -4289,7 +4289,7 @@ const classmates = [
         }
     },
     {
-        id: "runa",
+        id: "luna",
         name: "るな",
         fullname: "槻 琉奈（けやき　るな）",
         class: "M3-2",
