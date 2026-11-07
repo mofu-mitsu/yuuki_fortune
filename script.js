@@ -452,7 +452,7 @@ function renderCharacterCards(members) {
         const safeId = String(character.id).replace(/[^a-zA-Z0-9_-]/g, "");
         const isSelected = character.id === selectedCharacterId;
         return `<button type="button" class="character-card${isSelected ? " selected" : ""}" data-character-id="${safeId}" onclick="selectCharacter('${safeId}')">
-            <img src="${image}" alt="${character.name}" onerror="this.onerror=null;this.src='images/default.png';">
+            <img src="${image}" alt="${character.name}" onerror="this.onerror=null;this.style.visibility='hidden';">
             <span class="character-card-name">${character.name}</span>
             <span class="character-card-fullname">${character.fullname || ""}</span>
         </button>`;
@@ -525,7 +525,7 @@ function showCompResult(partner, score, rank) {
         
         <div class="partner-img">
             <img src="${partnerImgSrc}" 
-                 onerror="this.src='images/default.png'; this.onerror=null;" 
+                 onerror="if(this.dataset.fallbackTried){this.onerror=null;return;}this.dataset.fallbackTried='1';this.onerror=null;this.src='images/${partner.id}.png';" 
                  style="border-color:${color}; object-fit:cover;">
         </div>
         
