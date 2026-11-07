@@ -145,14 +145,28 @@
                 <option value="2-2">2年2組</option>
                 <option value="3-1">3年1組</option>
                 <option value="3-2">3年2組</option>
+                <option value="M1-1">中1年1組</option>
+                <option value="M1-2">中1年2組</option>
+                <option value="M2-1">中2年1組</option>
+                <option value="M2-2">中2年2組</option>
+                <option value="M3-1">中3年1組</option>
+                <option value="M3-2">中3年2組</option>
+                <option value="E-A">小学生</option>
             </select>
-            <br>
-            <select id="member-select">
-                <option value="">まずはクラスを選んでね</option>
-            </select>
-            <br>
+            <div class="character-search-area">
+                <label for="character-search">名前で検索</label>
+                <input type="search" id="character-search" placeholder="キャラクター名を入力…" oninput="filterCharacterCards()">
+            </div>
+            <p class="selection-hint">顔を見ながら選べるよ！</p>
+            <div id="character-card-list" class="character-card-list">
+                <p class="empty-character-message">まずはクラスを選んでね</p>
+            </div>
+            <input type="hidden" id="member-select" value="">
             <button onclick="calculateSpecificCompatibility()" class="menu-btn">占う！</button>
             <button onclick="startCompatibilityMenu()" class="retry-btn">戻る</button>
+            <a href="https://mofu-mitsu.github.io/Torinooka_portal/" target="_blank" rel="noopener noreferrer" class="portal-link">
+                <i class="fa-solid fa-book-open"></i> キャラクターポータルサイトへ
+            </a>
         </div>
 
         <!-- 自由入力フォーム -->
