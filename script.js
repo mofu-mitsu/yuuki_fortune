@@ -404,22 +404,73 @@ function showSelectForm() {
     selectForm.classList.remove("hidden");
 }
 
+let selectedCharacterId = "";
+
+function getClassDisplayName(className) {
+    const labels = {
+        "1-1": "1年1組", "1-2": "1年2組", "1-3": "1年3組", "1-4": "1年4組",
+        "2-1": "2年1組", "2-2": "2年2組", "3-1": "3年1組", "3-2": "3年2組",
+        "M1-1": "中1年1組", "M1-2": "中1年2組",
+        "M2-1": "中2年1組", "M2-2": "中2年2組",
+        "M3-1": "中3年1組", "M3-2": "中3年2組", "E-A": "小学生"
+    };
+    return labels[className] || className || "クラス未設定";
+}
+
+function getCharacterImage(character, rank = "normal") {
+    if (character.customImage) return character.customImage;
+    const suffix = rank === "best" || rank === "good" ? "_good" : rank === "bad" ? "_bad" : "";
+    return `images/${character.id}${suffix}.png`;
+}
+
 function updateMemberSelect() {
     const classVal = document.getElementById("class-select").value;
-    const memberSelect = document.getElementById("member-select");
-    memberSelect.innerHTML = "<option value=''>誰にする？</option>";
+    const searchInput = document.getElementById("character-search");
+    selectedCharacterId = "";
+    document.getElementById("member-select").value = "";
+    if (searchInput) searchInput.value = "";
+    renderCharacterCards(classmates.filter(c => c.class === classVal));
+}
 
-    const members = classmates.filter(c => c.class === classVal);
-    members.forEach(m => {
-        const option = document.createElement("option");
-        option.value = m.id;
-        option.textContent = m.name;
-        memberSelect.appendChild(option);
+function filterCharacterCards() {
+    const classVal = document.getElementById("class-select").value;
+    const query = document.getElementById("character-search").value.trim().toLocaleLowerCase();
+    const members = classmates.filter(c => c.class === classVal &&
+        [c.name, c.fullname, c.id].some(value => (value || "").toLocaleLowerCase().includes(query)));
+    renderCharacterCards(members);
+}
+
+function renderCharacterCards(members) {
+    const list = document.getElementById("character-card-list");
+    if (!list) return;
+    if (!members.length) {
+        list.innerHTML = '<p class="empty-character-message">該当するキャラクターがいないみたい…！</p>';
+        return;
+    }
+    list.innerHTML = members.map(character => {
+        const image = getCharacterImage(character, "normal");
+        const safeId = String(character.id).replace(/[^a-zA-Z0-9_-]/g, "");
+        const isSelected = character.id === selectedCharacterId;
+        return `<button type="button" class="character-card${isSelected ? " selected" : ""}" data-character-id="${safeId}" onclick="selectCharacter('${safeId}')">
+            <img src="${image}" alt="${character.name}" onerror="this.onerror=null;this.src='images/default.png';">
+            <span class="character-card-name">${character.name}</span>
+            <span class="character-card-fullname">${character.fullname || ""}</span>
+        </button>`;
+    }).join("");
+}
+
+function selectCharacter(characterId) {
+    const character = classmates.find(c => c.id === characterId);
+    if (!character) return;
+    selectedCharacterId = character.id;
+    document.getElementById("member-select").value = character.id;
+    document.querySelectorAll(".character-card").forEach(card => {
+        card.classList.toggle("selected", card.dataset.characterId === character.id);
     });
 }
 
 function calculateSpecificCompatibility() {
-    const targetId = document.getElementById("member-select").value;
+    const targetId = selectedCharacterId || document.getElementById("member-select").value;
     if (!targetId) {
         alert("誰か選んでよ〜！");
         return;
@@ -457,16 +508,7 @@ function showCompResult(partner, score, rank) {
     else if (rank === "normal") yuukiComment = "ま、普通が一番平和ってことよ。";
     else yuukiComment = "…ま、まあドンマイ！明日があるさ！";
 
-    let suffix = "";
-    if (rank === "best" || rank === "good") suffix = "_good";
-    else if (rank === "bad") suffix = "_bad";
-    
-    let partnerImgSrc;
-    if (partner.customImage) {
-        partnerImgSrc = partner.customImage;
-    } else {
-        partnerImgSrc = `images/${partner.id}${suffix}.png`;
-    }
+    const partnerImgSrc = getCharacterImage(partner, rank);
 
     // 戻り先判別
     let retryFunc = "startCompatibilityMenu()";
@@ -487,9 +529,9 @@ function showCompResult(partner, score, rank) {
                  style="border-color:${color}; object-fit:cover;">
         </div>
         
-        <h3>${partner.fullname} <span style="font-size:0.8em">(${partner.class})</span></h3>
+        <h3>${partner.fullname || partner.name} <span style="font-size:0.8em">(${getClassDisplayName(partner.class)})</span></h3>
         <div class="profile-info" style="border-left: 4px solid ${color}">
-            <div><span class="profile-tag">${types.mbti}</span><span class="profile-tag">${types.enneagram}</span><span class="profile-tag">${partner.motif || "?"}</span></div>
+            <div><span class="profile-tag">${types.mbti}</span><span class="profile-tag">${types.enneagram}</span><span class="profile-tag">${partner.motif || "?"}</span><span class="profile-tag">性別：${partner.gender === "none" || partner.gender === "None" ? "なし" : partner.gender === "Male" ? "男性" : partner.gender === "Female" ? "女性" : partner.gender || "なし"}</span></div>
             <p class="bio-text">${partner.bio || ""}</p>
         </div>
         <div class="score-box">相性度：<span class="score-num">${score}%</span></div>
