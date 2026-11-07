@@ -424,19 +424,35 @@ function getCharacterImage(character, rank = "normal") {
 }
 
 function updateMemberSelect() {
-    const classVal = document.getElementById("class-select").value;
     const searchInput = document.getElementById("character-search");
     selectedCharacterId = "";
     document.getElementById("member-select").value = "";
     if (searchInput) searchInput.value = "";
+
+    const classVal = document.getElementById("class-select").value;
+    const list = document.getElementById("character-card-list");
+    if (!classVal) {
+        if (list) list.innerHTML = '<p class="empty-character-message">クラスを選ぶか、名前で検索してね</p>';
+        return;
+    }
     renderCharacterCards(classmates.filter(c => c.class === classVal));
 }
 
 function filterCharacterCards() {
     const classVal = document.getElementById("class-select").value;
     const query = document.getElementById("character-search").value.trim().toLocaleLowerCase();
-    const members = classmates.filter(c => c.class === classVal &&
-        [c.name, c.fullname, c.id].some(value => (value || "").toLocaleLowerCase().includes(query)));
+
+    // クラス未選択でも、名前が入力されていれば全クラスから検索する
+    if (!classVal && !query) {
+        const list = document.getElementById("character-card-list");
+        if (list) list.innerHTML = '<p class="empty-character-message">クラスを選ぶか、名前で検索してね</p>';
+        return;
+    }
+
+    const members = classmates.filter(c =>
+        (!classVal || c.class === classVal) &&
+        [c.name, c.fullname, c.id].some(value => (value || "").toLocaleLowerCase().includes(query))
+    );
     renderCharacterCards(members);
 }
 
